@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema({
     phone: {
         type: String,
         trim: true,
-        required: true
     },
 
     // Địa chỉ mặc định của khách hàng
