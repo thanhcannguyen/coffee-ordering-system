@@ -2,7 +2,7 @@
 import User from '../models/user.model.js'
 import bcrypt from 'bcryptjs'               // Import thư viện bcryptjs để mã hóa (hash) mật khẩu
 import nodemailer from 'nodemailer'         // Import thư viện nodemailer để gửi email từ backend
-
+import jwt from 'jsonwebtoken'
 
 // Hàm có nhiệm vụ gửi email otp
 const sendOTPEmail = async (email, otp) => {
@@ -187,6 +187,92 @@ export const verifyEmail = async (req, res) => {
         console.error('Lỗi verifyEmail:', error)
         res.status(500).json({
             message: 'Lỗi server, vui lòng thử lại sau',
+        })
+    }
+}
+
+
+
+// controller xử lý đăng nhập
+// POST /api/auth/login
+export const login = async (req, res) => {
+    try {
+        // Bước 1: Lấy dữ liệu (email, password) từ request client gửi lên
+        const { email, password } = req.body
+
+        // Bước 2: Validate đầu vào, kiểm tra có thiếu email hay password không
+        if (!email || !password) {
+            return res.status(400).json({
+                message: "Vui lòng nhập email và mật khẩu"
+            })
+        }
+
+        // Bước 3 Tìm user theo email
+        const user = await User.findOne({ email }).select('+password')
+        if (!user) {
+            return res.status(404).json({
+                message: "Email không tồn tại, hãy kiểm tra lại"
+            })
+        }
+
+        // Bước 4 Kiểm tra email đã được xác minh chưa
+        // Chưa verify OTP → không cho đăng nhập
+        if (!user.isEmailVerified) {
+            return res.status(403).json({
+                message: 'Tài khoản chưa được xác minh, vui lòng kiểm tra email',
+            })
+        }
+
+        // Bước 5 — Kiểm tra tài khoản có bị khóa không
+        // isActive: false → admin đã khóa tài khoản này
+        if (!user.isActive) {
+            return res.status(403).json({
+                message: 'Tài khoản đã bị khóa, vui lòng liên hệ hỗ trợ',
+            })
+        }
+
+        // Bước 6 — So sánh password
+        // Không thể so sánh trực tiếp vì DB lưu hash
+        // bcrypt.compare tự xử lý việc này
+        const isMatch = await bcrypt.compare(password, user.password)
+
+        if (!isMatch) {
+            return res.status(401).json({
+                message: 'Mật khẩu không chính xác',
+            })
+        }
+
+        // Bước 7 — Tạo JWT token
+        // Payload chứa id và role — đủ để middleware xác minh sau này
+        const token = jwt.sign(
+            {
+                id: user._id,
+                role: user.role,
+            },
+            process.env.JWT_SECRET,
+            {
+                expiresIn: '7d', // token hết hạn sau 7 ngày
+            }
+        )
+
+        // Bước 8 — Trả response về client
+        // Không trả password dù đã hash
+        res.status(200).json({
+            success: true,
+            message: 'Đăng nhập thành công',
+            token,
+            data: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+            },
+        })
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Lỗi Server",
+            error: error.message
         })
     }
 }
