@@ -3,17 +3,32 @@ import express from 'express'
 import authRoute from './routes/auth.route.js'
 import userRoute from './routes/user.route.js'
 
+// import middleware CORS để cho phép frontend gọi API backend
+// thư viện giúp backend cho phép request từ domain khác (frontend)
+import cors from 'cors'
+
 const app = express()
+
+//  Cho phép frontend (React) gọi API backend
+app.use(cors({
+    origin: 'http://localhost:5173',    //  chỉ cho phép FE này gọi
+    credentials: true                   //  cho phép gửi token / cookie
+}))
+
 
 // Middleware — parse body JSON
 // Phải có trước khi khai báo route
 // Không có dòng này → req.body sẽ là undefined
+// Cho phép đọc dữ liệu JSON từ request (req.body)
 app.use(express.json())
 
 
 // Routes
 // Mọi request đến /api/auth/... sẽ vào authRoute
+// Route auth: /api/auth/*
 app.use('/api/auth', authRoute)
+
+// Route user: /api/users/*
 app.use('/api/users', userRoute)
 
 
