@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../../api/axiosInstance'
 import { useAuth } from '../../context/AuthContext'
 
 export default function Login() {
@@ -33,10 +33,7 @@ export default function Login() {
         setError('')
 
         try {
-            const res = await axios.post(
-                'http://localhost:5000/api/auth/login',
-                formData
-            )
+            const res = await axiosInstance.post('/auth/login', formData)
 
             // Backend của bạn trả token và user trong data
             const token = res.data.token

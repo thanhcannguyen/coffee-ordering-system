@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../../api/axiosInstance'
 
 export default function VerifyEmail() {
     const navigate = useNavigate()
@@ -24,13 +24,7 @@ export default function VerifyEmail() {
         setError('')
 
         try {
-            const res = await axios.post(
-                'http://localhost:5000/api/auth/verify-email',
-                {
-                    email,
-                    otp,
-                }
-            )
+            const res = await axiosInstance.post('/auth/verify-email', { email, otp })
 
             setMessage(res.data.message || 'Xác thực email thành công')
 

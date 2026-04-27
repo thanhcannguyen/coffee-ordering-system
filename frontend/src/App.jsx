@@ -9,6 +9,8 @@ import UserRoute from './routes/UserRoute'
 import AdminRoute from './routes/AdminRoute'
 import { useAuth } from './context/AuthContext'
 
+import Profile from './pages/user/Profile'
+
 // Trang tạm cho user sau khi login
 function UserHome() {
   const { user, logout } = useAuth()
@@ -57,7 +59,7 @@ export default function App() {
           path="/home"
           element={
             <UserRoute>
-              <UserHome />
+              <Profile />
             </UserRoute>
           }
         />

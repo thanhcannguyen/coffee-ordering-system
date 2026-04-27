@@ -1,7 +1,7 @@
 
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import axios from 'axios'
+import axiosInstance from '../../api/axiosInstance'
 
 export default function Register() {
     const navigate = useNavigate()
@@ -34,10 +34,7 @@ export default function Register() {
         setError('')
 
         try {
-            const res = await axios.post(
-                'http://localhost:5000/api/auth/register',
-                formData
-            )
+            const res = await axiosInstance.post('/auth/register', formData)
 
             setMessage(res.data.message || 'Đăng ký thành công')
 
