@@ -3,7 +3,7 @@ import express from 'express'
 import authRoute from './routes/auth.route.js'
 import userRoute from './routes/user.route.js'
 import categoryRoute from './routes/category.route.js'
-
+import productRoute from './routes/product.route.js'
 
 // import middleware CORS để cho phép frontend gọi API backend
 // thư viện giúp backend cho phép request từ domain khác (frontend)
@@ -35,6 +35,9 @@ app.use('/api/users', userRoute)
 
 // Route category: /api/categories/*
 app.use('/api/categories', categoryRoute)
+
+// Route product: /api/product/*
+app.use('/api/products', productRoute)
 
 // Route không tồn tại — bắt 404
 app.use((req, res) => {
