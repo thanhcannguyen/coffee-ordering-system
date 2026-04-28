@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
-        minlength: 6,       // tối thiểu 6 kí tự
+        minLength: 6,       // tối thiểu 6 kí tự
         select: false       // mặc định không trả password khi query user
     },
 
