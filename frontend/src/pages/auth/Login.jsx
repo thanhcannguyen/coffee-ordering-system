@@ -46,7 +46,7 @@ export default function Login() {
             if (user.role === 'admin') {
                 navigate('/admin')
             } else {
-                navigate('/home')
+                navigate('/menu')
             }
         } catch (err) {
             setError(err.response?.data?.message || 'Đăng nhập thất bại')

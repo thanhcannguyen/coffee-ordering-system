@@ -1,78 +1,61 @@
-
+// src/App.jsx
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 
+// Auth
 import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import VerifyEmail from './pages/auth/VerifyEmail'
 
-import UserRoute from './routes/UserRoute'
-import AdminRoute from './routes/AdminRoute'
-import { useAuth } from './context/AuthContext'
+// Layouts
+import UserLayout from './layouts/UserLayout'
+import AdminLayout from './layouts/AdminLayout'
 
+// User pages
+import Menu from './pages/user/Menu'
+import ProductDetail from './pages/user/ProductDetail'
 import Profile from './pages/user/Profile'
 
-// Trang tạm cho user sau khi login
-function UserHome() {
-  const { user, logout } = useAuth()
+// Admin pages
+import Dashboard from './pages/admin/Dashboard'
+import Categories from './pages/admin/Categories'
+import Products from './pages/admin/Products'
+import Users from './pages/admin/Users'
 
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Trang User</h1>
-      <p>Xin chào: {user?.name}</p>
-      <p>Email: {user?.email}</p>
-      <p>Role: {user?.role}</p>
-
-      <button onClick={logout}>Đăng xuất</button>
-    </div>
-  )
-}
-
-// Trang tạm cho admin sau khi login
-function AdminHome() {
-  const { user, logout } = useAuth()
-
-  return (
-    <div style={{ padding: 40 }}>
-      <h1>Trang Admin</h1>
-      <p>Xin chào admin: {user?.name}</p>
-      <p>Email: {user?.email}</p>
-
-      <button onClick={logout}>Đăng xuất</button>
-    </div>
-  )
-}
+// Route guards
+import UserRoute from './routes/UserRoute'
+import AdminRoute from './routes/AdminRoute'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Vào trang gốc thì chuyển về login */}
-        <Route path="/" element={<Navigate to="/login" />} />
+        {/* Vào trang gốc → về login */}
+        <Route path='/' element={<Navigate to='/login' />} />
 
-        {/* Auth pages */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/verify-email" element={<VerifyEmail />} />
-        <Route path="/login" element={<Login />} />
+        {/* Auth — public */}
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+        <Route path='/verify-email' element={<VerifyEmail />} />
 
-        {/* Trang cần đăng nhập mới vào được */}
-        <Route
-          path="/home"
-          element={
-            <UserRoute>
-              <Profile />
-            </UserRoute>
-          }
-        />
+        {/* User — cần đăng nhập, dùng UserLayout */}
+        <Route element={<UserRoute><UserLayout /></UserRoute>}>
+          <Route path='/menu' element={<Menu />} />
+          <Route path='/product/:id' element={<ProductDetail />} />
+          <Route path='/profile' element={<Profile />} />
+          {/* Giai đoạn 3 thêm vào đây: /cart, /checkout, /orders */}
+        </Route>
 
-        {/* Trang chỉ admin mới vào được */}
-        <Route
-          path="/admin"
-          element={
-            <AdminRoute>
-              <AdminHome />
-            </AdminRoute>
-          }
-        />
+        {/* Admin — chỉ admin, dùng AdminLayout */}
+        <Route element={<AdminRoute><AdminLayout /></AdminRoute>}>
+          <Route path='/admin' element={<Dashboard />} />
+          <Route path='/admin/categories' element={<Categories />} />
+          <Route path='/admin/products' element={<Products />} />
+          <Route path='/admin/users' element={<Users />} />
+          {/* Giai đoạn 4-5 thêm vào đây: /admin/orders, /admin/users */}
+        </Route>
+
+        {/* Fallback */}
+        <Route path='*' element={<Navigate to='/login' />} />
       </Routes>
     </BrowserRouter>
   )
