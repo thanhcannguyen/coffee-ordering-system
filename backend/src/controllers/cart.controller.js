@@ -4,7 +4,8 @@ import {
     getCartService,
     addToCartService,
     updateCartItemService,
-    removeCartItemService
+    removeCartItemService,
+    clearCartService
 } from "../services/cart.service.js"
 
 // controller xử lý request lấy xem giỏ hàng
@@ -181,6 +182,36 @@ export const removeCartItem = async (req, res) => {
         // Bước 7 — Trả lỗi về client
         return res.status(status).json({
             message: error.message
+        })
+    }
+}
+
+
+
+// CONTROLLER 5 — Xóa toàn bộ giỏ hàng
+// DELETE /api/cart
+// Mục đích:
+// - Nhận request từ client để xóa toàn bộ giỏ hàng
+// - Gọi service xử lý việc clear cart
+// - Trả response thành công về client
+
+export const clearCart = async (req, res) => {
+    try {
+        // Bước 1 — Gọi service để xóa toàn bộ giỏ hàng
+        // req.user._id lấy từ middleware auth
+        await clearCartService(req.user._id)
+
+        // Bước 2 — Trả response thành công
+        return res.status(200).json({
+            success: true,
+            message: 'Đã xóa toàn bộ giỏ hàng'
+        })
+    } catch (error) {
+        // Bước 3 — Log lỗi để debug phía server
+        console.error('Lỗi clearCart:', error)
+        // Bước 4 — Trả lỗi server về client
+        return res.status(500).json({
+            message: 'Lỗi server'
         })
     }
 }

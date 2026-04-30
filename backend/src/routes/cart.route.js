@@ -4,7 +4,8 @@ import {
     getCart,
     addToCart,
     updateCartItem,
-    removeCartItem
+    removeCartItem,
+    clearCart
 } from "../controllers/cart.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 
@@ -25,5 +26,10 @@ router.put('/:productId', protect, updateCartItem)
 // DELETE /api / productId
 // xóa 1 item
 router.delete('/:productId', protect, removeCartItem)
+
+
+// DELETE /api/
+// xóa hết giỏ hàng
+router.delete('/', protect, clearCart)
 
 export default router;

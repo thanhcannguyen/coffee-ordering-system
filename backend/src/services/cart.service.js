@@ -153,3 +153,28 @@ export const removeCartItemService = async (userId, productId) => {
     // Bước 7 — Populate thông tin sản phẩm rồi trả cart về
     return await cart.populate(populateConfig)
 }
+
+
+
+// SERVICE 5 — Xóa toàn bộ giỏ hàng
+// Mục đích:
+// - Xóa toàn bộ sản phẩm trong giỏ hàng của user
+// - Đưa totalAmount về 0
+// - Thường dùng sau khi user checkout / tạo order thành công
+
+export const clearCartService = async (userId) => {
+    // Bước 1 — Tìm giỏ hàng của user
+    const cart = await Cart.findOne({ user: userId })
+    // Bước 2 — Nếu user chưa có giỏ hàng thì không cần làm gì
+    // Không throw error vì clear cart là thao tác "dọn sạch"
+    // Nếu chưa có cart thì coi như giỏ đã sạch rồi
+    if (!cart) return
+    // Bước 3 — Xóa toàn bộ item trong giỏ
+    cart.items = []
+    // Bước 4 — Reset tổng tiền về 0
+    cart.totalAmount = 0
+    // Bước 5 — Lưu thay đổi vào database
+    await cart.save()
+    // Bước 6 — Trả cart sau khi đã clear
+    return cart
+}
