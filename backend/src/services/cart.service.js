@@ -86,3 +86,33 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
     return await cart.populate(populateConfig)
 
 }
+
+
+
+// cập nhật số lượng item trong giỏ hàng
+export const updateCartItemService = async (userId, productId, quantity) => {
+    // 1. Tìm giỏ hàng của user
+    const cart = await Cart.findOne({ user: userId })
+    // Nếu không có giỏ hàng thì báo lỗi
+    if (!cart) {
+        throw new Error('Giỏ hàng không tồn tại')
+    }
+    // 2. Tìm item trong giỏ bằng productId
+    const itemIndex = cart.items.findIndex(
+        item => item.product.toString() === productId.toString()
+    )
+    // 3. Nếu quantity <= 0 thì xóa item
+    if (quantity <= 0) {
+        // Số lượng về 0 → xóa item luôn
+        cart.items.splice(itemIndex, 1)
+    } else {
+        // 4. Nếu quantity > 0 thì cập nhật quantity
+        cart.items[itemIndex].quantity = quantity
+    }
+    // 5. Tính lại tổng tiền
+    cart.totalAmount = calcTotal(cart.items)
+    // 6. Lưu DB
+    await cart.save()
+    // 7. Trả cart đã populate
+    return await cart.populate(populateConfig)
+}

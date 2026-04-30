@@ -1,6 +1,10 @@
 
 // import service xử lý logic giỏ hàng
-import { getCartService, addToCartService } from "../services/cart.service.js"
+import {
+    getCartService,
+    addToCartService,
+    updateCartItemService
+} from "../services/cart.service.js"
 
 // controller xử lý request lấy xem giỏ hàng
 export const getCart = async (req, res) => {
@@ -70,6 +74,65 @@ export const addToCart = async (req, res) => {
         // Bước 7 — Trả lỗi về client
         // Ở version đơn giản: coi mọi lỗi là 400 (bad request)
         res.status(400).json({
+            message: error.message
+        })
+    }
+}
+
+
+// CONTROLLER 3 — Cập nhật số lượng item
+// PUT /api/cart/:productId
+// Body: { quantity }
+
+export const updateCartItem = async (req, res) => {
+    try {
+        // Bước 1 — Lấy productId từ URL params
+        const { productId } = req.params
+
+        // Bước 2 — Lấy quantity từ body
+        const { quantity } = req.body
+
+        // Bước 3 — Kiểm tra quantity có được gửi lên không
+        if (quantity === undefined || quantity === null) {
+            return res.status(400).json({
+                message: 'Thiếu quantity'
+            })
+        }
+
+        // Bước 4 — Ép quantity về number
+        const qty = Number(quantity)
+
+        // Bước 5 — Kiểm tra quantity có phải số hợp lệ không
+        if (Number.isNaN(qty)) {
+            return res.status(400).json({
+                message: 'Quantity phải là số'
+            })
+        }
+
+        // Bước 6 — Không cho phép số thập phân
+        if (!Number.isInteger(qty)) {
+            return res.status(400).json({
+                message: 'Quantity phải là số nguyên'
+            })
+        }
+
+        // Bước 7 — Gọi service xử lý logic chính
+        // quantity <= 0 thì service sẽ xóa item khỏi giỏ
+        const cart = await updateCartItemService(
+            req.user._id,
+            productId,
+            qty
+        )
+
+        // Bước 8 — Trả response thành công
+        return res.status(200).json({
+            success: true,
+            data: cart
+        })
+
+    } catch (error) {
+        console.error('Lỗi updateCartItem:', error)
+        return res.status(500).json({
             message: error.message
         })
     }

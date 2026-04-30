@@ -1,6 +1,10 @@
 
 import express from "express";
-import { getCart, addToCart } from "../controllers/cart.controller.js";
+import {
+    getCart,
+    addToCart,
+    updateCartItem
+} from "../controllers/cart.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -9,8 +13,12 @@ const router = express.Router();
 // Lấy giỏ hàng của user đang đăng nhập
 router.get("/", protect, getCart);
 
-// POST / api/cart
+// POST /api/cart
 // thêm sản phẩm vào giỏ hàng
 router.post("/", protect, addToCart);
+
+// PUT /api/productId
+// cập nhật số lượng
+router.put('/:productId', protect, updateCartItem)
 
 export default router;
