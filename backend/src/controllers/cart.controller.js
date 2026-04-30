@@ -3,7 +3,8 @@
 import {
     getCartService,
     addToCartService,
-    updateCartItemService
+    updateCartItemService,
+    removeCartItemService
 } from "../services/cart.service.js"
 
 // controller xử lý request lấy xem giỏ hàng
@@ -133,6 +134,52 @@ export const updateCartItem = async (req, res) => {
     } catch (error) {
         console.error('Lỗi updateCartItem:', error)
         return res.status(500).json({
+            message: error.message
+        })
+    }
+}
+
+
+
+// CONTROLLER 4 — Xóa 1 item khỏi giỏ hàng
+// DELETE /api/cart/:productId
+// Mục đích:
+// - Nhận request từ client để xóa 1 sản phẩm khỏi giỏ
+// - Validate dữ liệu đầu vào (productId)
+// - Gọi service xử lý logic chính
+// - Trả kết quả về client
+export const removeCartItem = async (req, res) => {
+    try {
+        // Bước 1 — Lấy productId từ URL params
+        // Ví dụ: DELETE /api/cart/abc123
+        const { productId } = req.params
+        // Bước 2 — Validate productId (bắt buộc phải có)
+        if (!productId) {
+            return res.status(400).json({
+                message: 'Thiếu productId'
+            })
+        }
+        // Bước 3 — Gọi service xử lý logic xóa item
+        // Truyền userId (từ middleware auth) + productId
+        const cart = await removeCartItemService(
+            req.user._id,
+            productId
+        )
+        // Bước 4 — Trả response thành công
+        return res.status(200).json({
+            success: true,
+            message: 'Xóa item khỏi giỏ hàng thành công',
+            data: cart
+        })
+    } catch (error) {
+        // Bước 5 — Log lỗi để debug phía server
+        console.error('Lỗi removeCartItem:', error)
+        // Bước 6 — Phân loại lỗi đơn giản
+        // Nếu lỗi có chữ "không" → lỗi phía client (400)
+        // Ngược lại → lỗi server (500)
+        const status = error.message.includes('không') ? 400 : 500
+        // Bước 7 — Trả lỗi về client
+        return res.status(status).json({
             message: error.message
         })
     }

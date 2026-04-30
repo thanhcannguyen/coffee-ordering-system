@@ -116,3 +116,40 @@ export const updateCartItemService = async (userId, productId, quantity) => {
     // 7. Trả cart đã populate
     return await cart.populate(populateConfig)
 }
+
+
+// Xóa 1 item khỏi giỏ hàng
+// Mục đích:
+// - Xóa một sản phẩm cụ thể khỏi giỏ hàng của user
+// - Sau khi xóa thì tính lại tổng tiền
+// - Lưu cart mới vào database
+// - Trả về cart đã populate thông tin sản phẩm
+
+export const removeCartItemService = async (userId, productId) => {
+    // Bước 1 — Tìm giỏ hàng của user
+    const cart = await Cart.findOne({ user: userId })
+    // Nếu user chưa có giỏ hàng thì không thể xóa sản phẩm
+    if (!cart) {
+        throw new Error('Giỏ hàng không tồn tại')
+    }
+    // Bước 2 — Lưu lại số lượng item trước khi xóa
+    // Mục đích: lát nữa so sánh xem có item nào thật sự bị xóa không
+    const beforeCount = cart.items.length
+    // Bước 3 — Lọc bỏ sản phẩm cần xóa khỏi mảng items
+    // Giữ lại những item có product khác productId cần xóa
+    cart.items = cart.items.filter(
+        item => item.product.toString() !== productId.toString()
+    )
+    // Bước 4 — Kiểm tra xem sản phẩm có tồn tại trong giỏ không
+    // Nếu số lượng item sau khi filter vẫn bằng ban đầu
+    // nghĩa là không có sản phẩm nào bị xóa
+    if (cart.items.length === beforeCount) {
+        throw new Error('Sản phẩm không có trong giỏ hàng')
+    }
+    // Bước 5 — Tính lại tổng tiền sau khi xóa sản phẩm
+    cart.totalAmount = calcTotal(cart.items)
+    // Bước 6 — Lưu thay đổi vào database
+    await cart.save()
+    // Bước 7 — Populate thông tin sản phẩm rồi trả cart về
+    return await cart.populate(populateConfig)
+}

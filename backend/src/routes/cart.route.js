@@ -3,7 +3,8 @@ import express from "express";
 import {
     getCart,
     addToCart,
-    updateCartItem
+    updateCartItem,
+    removeCartItem
 } from "../controllers/cart.controller.js";
 import { protect } from "../middlewares/auth.middleware.js";
 
@@ -20,5 +21,9 @@ router.post("/", protect, addToCart);
 // PUT /api/productId
 // cập nhật số lượng
 router.put('/:productId', protect, updateCartItem)
+
+// DELETE /api / productId
+// xóa 1 item
+router.delete('/:productId', protect, removeCartItem)
 
 export default router;
