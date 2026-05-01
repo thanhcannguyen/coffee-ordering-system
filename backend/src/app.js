@@ -5,6 +5,7 @@ import userRoute from './routes/user.route.js'
 import categoryRoute from './routes/category.route.js'
 import productRoute from './routes/product.route.js'
 import cartRoute from "./routes/cart.route.js"
+import orderRoute from './routes/order.route.js'
 
 // import middleware CORS để cho phép frontend gọi API backend
 // thư viện giúp backend cho phép request từ domain khác (frontend)
@@ -42,6 +43,9 @@ app.use('/api/products', productRoute)
 
 // Route cart: /api/cart/*
 app.use("/api/cart", cartRoute);
+
+// Route orders: /api/orders/*
+app.use('/api/orders', orderRoute)
 
 // Route không tồn tại — bắt 404
 app.use((req, res) => {
