@@ -15,6 +15,9 @@ import Menu from './pages/user/Menu'
 import ProductDetail from './pages/user/ProductDetail'
 import Profile from './pages/user/Profile'
 import Cart from './pages/user/Cart'
+import Checkout from './pages/user/Checkout'
+import Orders from './pages/user/Orders'
+import OrderDetail from './pages/user/OrderDetail'
 
 // Admin pages
 import Dashboard from './pages/admin/Dashboard'
@@ -25,6 +28,7 @@ import Users from './pages/admin/Users'
 // Route guards
 import UserRoute from './routes/UserRoute'
 import AdminRoute from './routes/AdminRoute'
+import AdminOrders from './pages/admin/Orders'
 
 export default function App() {
   return (
@@ -45,6 +49,9 @@ export default function App() {
           <Route path='/profile' element={<Profile />} />
           <Route path='/cart' element={<Cart />} />
           {/* Giai đoạn 3 thêm vào đây: /cart, /checkout, /orders */}
+          <Route path="/checkout" element={<Checkout />} />
+          <Route path="/orders" element={<Orders />} />
+          <Route path="/orders/:id" element={<OrderDetail />} />
         </Route>
 
         {/* Admin — chỉ admin, dùng AdminLayout */}
@@ -54,6 +61,7 @@ export default function App() {
           <Route path='/admin/products' element={<Products />} />
           <Route path='/admin/users' element={<Users />} />
           {/* Giai đoạn 4-5 thêm vào đây: /admin/orders, /admin/users */}
+          <Route path="/admin/orders" element={<AdminOrders />} />
         </Route>
 
         {/* Fallback */}
