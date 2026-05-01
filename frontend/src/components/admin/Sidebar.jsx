@@ -8,7 +8,7 @@ const navItems = [
     { path: '/admin/categories', label: 'Danh mục', icon: '◈' },
     { path: '/admin/products', label: 'Sản phẩm', icon: '◈' },
     { path: '/admin/users', label: 'Người dùng', icon: '◈' },
-    { path: '/admin/orders', label: 'Đơn hàng', icon: '◈', disabled: true },
+    { path: '/admin/orders', label: 'Đơn hàng', icon: '◈', disabled: false },
 ]
 
 export default function Sidebar() {
