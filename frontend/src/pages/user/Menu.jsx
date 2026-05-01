@@ -4,13 +4,17 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getCategories } from '../../api/categoryApi'
 import { getProducts } from '../../api/productApi'
+import { useCart } from '../../context/CartContext'
 
 export default function Menu() {
     const navigate = useNavigate()
+    const { addToCart } = useCart()
+
     const [categories, setCategories] = useState([])
     const [products, setProducts] = useState([])
     const [selectedCategory, setSelectedCategory] = useState(null)
     const [loading, setLoading] = useState(true)
+    const [addingId, setAddingId] = useState(null) // id đang thêm vào giỏ
 
     // Lấy danh sách category khi vào trang
     useEffect(() => {
@@ -28,6 +32,14 @@ export default function Menu() {
             .catch(console.error)
             .finally(() => setLoading(false))
     }, [selectedCategory])
+
+    const handleAddToCart = async (e, productId) => {
+        e.stopPropagation() // không navigate vào ProductDetail
+        setAddingId(productId)
+        const success = await addToCart(productId, 1)
+        if (!success) alert('Không thể thêm vào giỏ hàng')
+        setAddingId(null)
+    }
 
     return (
         <div style={s.page}>
@@ -90,10 +102,8 @@ export default function Menu() {
                                         <button
                                             style={s.addBtn}
                                             // Giai đoạn 3 sẽ gắn addToCart vào đây
-                                            onClick={e => {
-                                                e.stopPropagation()
-                                                alert('Chức năng giỏ hàng sẽ có ở giai đoạn 3')
-                                            }}
+                                            onClick={e => handleAddToCart(e, product._id)}
+                                            disabled={addingId === product._id}
                                         >
                                             + Thêm
                                         </button>
@@ -151,6 +161,7 @@ const s = {
         background: '#6f4e37', color: '#fff',
         border: 'none', fontSize: 13, cursor: 'pointer', fontWeight: 500,
     },
+    center: { textAlign: 'center', color: '#8b7355', padding: 40 },
     loading: { textAlign: 'center', color: '#8b7355', padding: 40 },
     empty: { textAlign: 'center', color: '#8b7355', padding: 40 },
 }

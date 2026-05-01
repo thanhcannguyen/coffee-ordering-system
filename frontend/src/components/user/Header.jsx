@@ -1,10 +1,12 @@
 
 // src/components/user/Header.jsx
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../../context/AuthContext'
+import { useAuth } from '../../context/AuthContext.jsx'
+import { useCart } from '../../context/CartContext.jsx'
 
 export default function Header() {
     const { user, logout } = useAuth()
+    const { cartCount } = useCart()       // ← lấy số lượng từ CartContext
     const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -23,8 +25,13 @@ export default function Header() {
             </nav>
 
             <div style={s.right}>
-                {/* Giỏ hàng — giai đoạn 3 sẽ gắn số lượng vào */}
-                <Link to='/cart' style={s.cartBtn}>🛒</Link>
+                {/* Icon giỏ hàng + badge số lượng */}
+                <Link to='/cart' style={s.cartBtn}>
+                    🛒
+                    {cartCount > 0 && (
+                        <span style={s.badge}>{cartCount}</span>
+                    )}
+                </Link>
 
                 <div style={s.avatar}>
                     {user?.name?.charAt(0).toUpperCase()}
@@ -61,6 +68,13 @@ const s = {
     cartBtn: {
         fontSize: 20, textDecoration: 'none',
         padding: '4px 8px', borderRadius: 8,
+    },
+    badge: {
+        position: 'absolute', top: -6, right: -6,
+        width: 18, height: 18, borderRadius: '50%',
+        background: '#6f4e37', color: '#fff',
+        fontSize: 10, fontWeight: 700,
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
     },
     avatar: {
         width: 34, height: 34, borderRadius: '50%',

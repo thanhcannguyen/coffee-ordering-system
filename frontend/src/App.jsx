@@ -14,6 +14,7 @@ import AdminLayout from './layouts/AdminLayout'
 import Menu from './pages/user/Menu'
 import ProductDetail from './pages/user/ProductDetail'
 import Profile from './pages/user/Profile'
+import Cart from './pages/user/Cart'
 
 // Admin pages
 import Dashboard from './pages/admin/Dashboard'
@@ -42,6 +43,7 @@ export default function App() {
           <Route path='/menu' element={<Menu />} />
           <Route path='/product/:id' element={<ProductDetail />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='/cart' element={<Cart />} />
           {/* Giai đoạn 3 thêm vào đây: /cart, /checkout, /orders */}
         </Route>
 
