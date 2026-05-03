@@ -50,20 +50,30 @@
     }
 }
 
-body {
+/* Reset toàn bộ */
+html,
+body,
+#root {
     margin: 0;
+    padding: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
 
+body {
+    overflow-x: hidden;
+}
+
+/* #root full màn hình, không căn giữa, không border */
 #root {
-    width: 1126px;
+    width: 100%;
     max-width: 100%;
-    margin: 0 auto;
-    text-align: center;
-    border-inline: 1px solid var(--border);
     min-height: 100svh;
+    margin: 0;
+    text-align: unset;
+    border-inline: none;
     display: flex;
     flex-direction: column;
-    box-sizing: border-box;
 }
 
 h1,
@@ -112,4 +122,258 @@ code {
     line-height: 135%;
     padding: 4px 8px;
     background: var(--code-bg);
+}
+
+/* ============================================
+   ADMIN GLOBAL STYLES — hover & transitions
+   ============================================ */
+
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: rgba(245, 240, 235, 0.55);
+    font-size: 13px;
+    text-decoration: none;
+    transition: background 0.18s, color 0.18s, transform 0.15s;
+}
+
+.admin-nav-link:hover {
+    background: rgba(111, 78, 55, 0.35);
+    color: #f5f0eb;
+    transform: translateX(3px);
+}
+
+.admin-nav-link.active {
+    background: #6f4e37;
+    color: #f5f0eb;
+    font-weight: 500;
+}
+
+.admin-tr {
+    border-bottom: 1px solid #f5f0eb;
+    transition: background 0.15s;
+}
+
+.admin-tr:hover {
+    background: #fdf8f4;
+}
+
+.admin-stat-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e8ddd5;
+    padding: 20px 22px;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.admin-stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(111, 78, 55, 0.12);
+    border-color: #c4a882;
+}
+
+.admin-btn-primary {
+    width: 100%;
+    padding: 11px;
+    background: #6f4e37;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 8px;
+    font-family: inherit;
+    transition: background 0.18s, transform 0.12s;
+}
+
+.admin-btn-primary:hover {
+    background: #5a3e2b;
+    transform: translateY(-1px);
+}
+
+.admin-btn-primary:active {
+    transform: translateY(0);
+}
+
+.admin-btn-secondary {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    color: #8b7355;
+    border: 1px solid #e8ddd5;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.admin-btn-secondary:hover {
+    background: #f5f0eb;
+    border-color: #c4a882;
+}
+
+.admin-btn-edit {
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: #f5f0eb;
+    color: #6f4e37;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 6px;
+    font-weight: 500;
+    transition: background 0.15s, transform 0.12s;
+}
+
+.admin-btn-edit:hover {
+    background: #e8d5c4;
+    transform: scale(1.05);
+}
+
+.admin-btn-del {
+    padding: 5px 12px;
+    border-radius: 6px;
+    background: #fde8e8;
+    color: #b42318;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.12s;
+}
+
+.admin-btn-del:hover {
+    background: #f9cccc;
+    transform: scale(1.05);
+}
+
+.admin-filter-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid #e8ddd5;
+    background: #fff;
+    color: #8b7355;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: all 0.15s;
+}
+
+.admin-filter-btn:hover {
+    background: #f5f0eb;
+    border-color: #c4a882;
+}
+
+.admin-filter-btn.active {
+    background: #6f4e37;
+    color: #fff;
+    border-color: #6f4e37;
+    font-weight: 500;
+}
+
+.admin-input {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #e8ddd5;
+    font-size: 13px;
+    background: #f5f0eb;
+    box-sizing: border-box;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.18s, background 0.18s;
+}
+
+.admin-input:focus {
+    border-color: #6f4e37;
+    background: #fff;
+}
+
+.admin-search-input {
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1px solid #e8ddd5;
+    font-size: 13px;
+    background: #fff;
+    outline: none;
+    font-family: inherit;
+    transition: border-color 0.18s, box-shadow 0.18s;
+}
+
+.admin-search-input:focus {
+    border-color: #6f4e37;
+    box-shadow: 0 0 0 3px rgba(111, 78, 55, 0.08);
+}
+
+.admin-next-btn {
+    display: block;
+    padding: 6px 12px;
+    border-radius: 7px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    margin-bottom: 6px;
+    white-space: nowrap;
+    font-family: inherit;
+    transition: opacity 0.15s, transform 0.12s;
+}
+
+.admin-next-btn:hover {
+    opacity: 0.82;
+    transform: translateX(2px);
+}
+
+.admin-cancel-btn {
+    display: block;
+    padding: 5px 12px;
+    border-radius: 7px;
+    border: none;
+    background: #fde8e8;
+    color: #b42318;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+}
+
+.admin-cancel-btn:hover {
+    background: #f9cccc;
+}
+
+.admin-logout-btn {
+    width: 100%;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: none;
+    border-radius: 7px;
+    color: rgba(245, 240, 235, 0.5);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s, color 0.15s;
+}
+
+.admin-logout-btn:hover {
+    background: rgba(180, 35, 24, 0.2);
+    color: #f5c5c2;
+}
+
+.admin-order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 11px 0;
+    border-bottom: 1px solid #f5f0eb;
+    transition: background 0.15s, padding 0.15s;
+    border-radius: 6px;
+}
+
+.admin-order-row:hover {
+    background: #fdf8f4;
+    padding: 11px 8px;
 }

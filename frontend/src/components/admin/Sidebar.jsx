@@ -1,101 +1,217 @@
-
 // src/components/admin/Sidebar.jsx
 import { NavLink, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
 const navItems = [
-    { path: '/admin', label: 'Dashboard', icon: '◈' },
-    { path: '/admin/categories', label: 'Danh mục', icon: '◈' },
+    { path: '/admin', label: 'Dashboard', icon: '▣' },
+    { path: '/admin/categories', label: 'Danh mục', icon: '◫' },
     { path: '/admin/products', label: 'Sản phẩm', icon: '◈' },
-    { path: '/admin/users', label: 'Người dùng', icon: '◈' },
-    { path: '/admin/orders', label: 'Đơn hàng', icon: '◈', disabled: false },
+    { path: '/admin/users', label: 'Người dùng', icon: '◎' },
+    { path: '/admin/orders', label: 'Đơn hàng', icon: '◉' },
 ]
 
 export default function Sidebar() {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
 
-    const handleLogout = () => { logout(); navigate('/login') }
+    const handleLogout = () => {
+        logout()
+        navigate('/login')
+    }
+
+    const getInitials = (name) => {
+        if (!name) return 'AD'
+        return name
+            .trim()
+            .split(' ')
+            .map(word => word[0])
+            .join('')
+            .slice(0, 2)
+            .toUpperCase()
+    }
 
     return (
         <aside style={s.sidebar}>
-            <div style={s.logo}>☕ Coffee Admin</div>
+            <div style={s.logo}>
+                <div style={s.logoIcon}>
+
+                    <span style={s.cup}>☕️</span>
+                </div>
+                <span style={s.logoText}>Coffee Admin</span>
+            </div>
 
             <nav style={s.nav}>
                 {navItems.map(item => (
-                    item.disabled ? (
-                        <div key={item.path} style={s.navDisabled}>
-                            <span>{item.icon}</span>
-                            <span>{item.label}</span>
-                            <span style={s.soon}>Sắp có</span>
-                        </div>
-                    ) : (
-                        <NavLink
-                            key={item.path}
-                            to={item.path}
-                            end={item.path === '/admin'}
-                            style={({ isActive }) => isActive ? s.navActive : s.navLink}
-                        >
-                            <span>{item.icon}</span>
-                            <span>{item.label}</span>
-                        </NavLink>
-                    )
+                    <NavLink
+                        key={item.path}
+                        to={item.path}
+                        end={item.path === '/admin'}
+                        className={({ isActive }) =>
+                            'admin-nav-link' + (isActive ? ' active' : '')
+                        }
+                    >
+                        <span style={s.icon}>{item.icon}</span>
+                        {item.label}
+                    </NavLink>
                 ))}
             </nav>
 
             <div style={s.footer}>
                 <div style={s.userCard}>
                     <div style={s.avatar}>
-                        {user?.name?.charAt(0).toUpperCase()}
+                        {getInitials(user?.name)}
                     </div>
-                    <div>
-                        <div style={s.userName}>{user?.name}</div>
-                        <div style={s.userRole}>Quản trị viên</div>
+
+                    <div style={s.userInfo}>
+                        <div style={s.userName}>{user?.name || 'Admin User'}</div>
+                        <div style={s.userRole}>Admin</div>
                     </div>
+
+                    <button
+                        type='button'
+                        style={s.logoutBtn}
+                        onClick={handleLogout}
+                        title='Đăng xuất'
+                    >
+                        ↪
+                    </button>
                 </div>
-                <button onClick={handleLogout} style={s.logoutBtn}>Đăng xuất</button>
             </div>
         </aside>
     )
 }
 
-const base = {
-    display: 'flex', alignItems: 'center', gap: 10,
-    padding: '10px 14px', borderRadius: 8,
-    fontSize: 14, textDecoration: 'none',
-    marginBottom: 2, transition: 'background 0.15s',
-}
 const s = {
     sidebar: {
-        width: 220, background: '#1a0f0a', minHeight: '100vh',
-        display: 'flex', flexDirection: 'column', padding: '24px 16px',
+        width: 220,
+        background: 'linear-gradient(180deg, #5a4033 0%, #3f2b23 100%)',
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '22px 14px',
+        flexShrink: 0,
+        borderRight: '1px solid rgba(255,255,255,0.1)',
+    },
+
+    logo: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: 11,
+        marginBottom: 32,
+        paddingLeft: 2
+    },
+
+    logoIcon: {
+        width: 38,
+        height: 38,
+        borderRadius: 12,
+        background: '#7a5645',
+        color: '#fff7ef',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: '0 8px 18px rgba(0,0,0,0.18)',
+        lineHeight: 1,
+    },
+
+    steam: {
+        fontSize: 12,
+        transform: 'translateY(2px)',
+        opacity: 0.85,
+    },
+
+    cup: {
+        fontSize: 22,
+        transform: 'translateY(-1px)',
+    },
+
+    logoText: {
+        color: '#fff8f0',
+        fontWeight: 700,
+        fontSize: 15,
+        letterSpacing: 0.3
+    },
+
+    nav: {
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 5
+    },
+
+    icon: {
+        fontSize: 13,
+        width: 16,
+        textAlign: 'center',
+        flexShrink: 0
+    },
+
+    footer: {
+        marginTop: 'auto',
+        paddingTop: 16,
+    },
+
+    userCard: {
+        width: '100%',
+        background: '#6f5041',
+        border: '1px solid rgba(255,255,255,0.12)',
+        borderRadius: 16,
+        padding: '11px 12px',
+        display: 'flex',
+        alignItems: 'center',
+        gap: 11,
+        boxShadow: '0 10px 24px rgba(0,0,0,0.22)',
+        boxSizing: 'border-box',
+    },
+
+    avatar: {
+        width: 38,
+        height: 38,
+        borderRadius: '50%',
+        background: '#8fb7d8',
+        color: '#ffffff',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        fontSize: 12,
+        fontWeight: 700,
         flexShrink: 0,
     },
-    logo: {
-        color: '#f5f0eb', fontWeight: 700, fontSize: 16,
-        marginBottom: 36, paddingLeft: 4,
+
+    userInfo: {
+        flex: 1,
+        minWidth: 0,
     },
-    nav: { flex: 1 },
-    navLink: { ...base, color: 'rgba(245,240,235,0.6)' },
-    navActive: { ...base, color: '#f5f0eb', background: '#6f4e37', fontWeight: 500 },
-    navDisabled: {
-        ...base, color: 'rgba(245,240,235,0.25)',
-        pointerEvents: 'none', justifyContent: 'space-between',
+
+    userName: {
+        color: '#fffaf5',
+        fontSize: 13,
+        fontWeight: 700,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
     },
-    soon: { fontSize: 10, letterSpacing: 0.5, textTransform: 'uppercase' },
-    footer: { borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 16 },
-    userCard: { display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 },
-    avatar: {
-        width: 32, height: 32, borderRadius: '50%',
-        background: '#6f4e37', color: '#fff',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontSize: 13, fontWeight: 600,
+
+    userRole: {
+        color: '#d8c7bc',
+        fontSize: 11,
+        marginTop: 3,
+        fontWeight: 500,
     },
-    userName: { color: '#f5f0eb', fontSize: 13, fontWeight: 500 },
-    userRole: { color: 'rgba(245,240,235,0.45)', fontSize: 11 },
+
     logoutBtn: {
-        width: '100%', padding: '8px', borderRadius: 8,
-        background: 'rgba(255,255,255,0.06)', border: 'none',
-        color: 'rgba(245,240,235,0.5)', fontSize: 13, cursor: 'pointer',
+        width: 28,
+        height: 28,
+        border: 'none',
+        borderRadius: 9,
+        background: 'rgba(255,255,255,0.08)',
+        color: '#f7ede5',
+        fontSize: 17,
+        lineHeight: 1,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        flexShrink: 0,
     },
 }
