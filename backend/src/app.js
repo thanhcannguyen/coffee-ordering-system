@@ -14,9 +14,20 @@ import cors from 'cors'
 const app = express()
 
 //  Cho phép frontend (React) gọi API backend
+const allowedOrigins = [
+    'http://localhost:5173',
+    'https://coffee-ordering-system-beta.vercel.app'
+]
+
 app.use(cors({
-    origin: 'http://localhost:5173',    //  chỉ cho phép FE này gọi
-    credentials: true                   //  cho phép gửi token / cookie
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true)
+        } else {
+            callback(new Error('Not allowed by CORS'))
+        }
+    },
+    credentials: true
 }))
 
 
