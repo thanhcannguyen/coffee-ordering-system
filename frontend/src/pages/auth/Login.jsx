@@ -8,46 +8,24 @@ export default function Login() {
     const navigate = useNavigate()
     const { login } = useAuth()
 
-    // Lưu email + password người dùng nhập
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    })
-
+    const [formData, setFormData] = useState({ email: '', password: '' })
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState('')
 
-    // Cập nhật dữ liệu form
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        })
+        setFormData({ ...formData, [e.target.name]: e.target.value })
+        setError('')
     }
 
-    // Gửi login lên backend
     const handleSubmit = async (e) => {
         e.preventDefault()
-
-        setLoading(true)
-        setError('')
-
+        setLoading(true); setError('')
         try {
             const res = await axiosInstance.post('/auth/login', formData)
-
-            // Backend của bạn trả token và user trong data
             const token = res.data.token
             const user = res.data.data
-
-            // Lưu token + user vào AuthContext và localStorage
             login(token, user)
-
-            // Điều hướng theo role
-            if (user.role === 'admin') {
-                navigate('/admin')
-            } else {
-                navigate('/menu')
-            }
+            navigate(user.role === 'admin' ? '/admin' : '/menu')
         } catch (err) {
             setError(err.response?.data?.message || 'Đăng nhập thất bại')
         } finally {
@@ -56,93 +34,124 @@ export default function Login() {
     }
 
     return (
-        <div style={styles.container}>
-            <form onSubmit={handleSubmit} style={styles.form}>
-                <h2>Đăng nhập</h2>
-                <p style={styles.desc}>Đăng nhập để tiếp tục sử dụng hệ thống</p>
+        <div style={s.page}>
+            <div style={s.card}>
 
-                {error && <p style={styles.error}>{error}</p>}
 
-                <input
-                    style={styles.input}
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                />
 
-                <input
-                    style={styles.input}
-                    type="password"
-                    name="password"
-                    placeholder="Mật khẩu"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                />
+                {/* Tiêu đề — căn giữa */}
+                <h2 style={s.title}>Đăng nhập</h2>
+                <p style={s.desc}>Chào mừng bạn quay trở lại</p>
 
-                <button style={styles.button} disabled={loading}>
-                    {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
-                </button>
+                {/* Thông báo lỗi — căn giữa */}
+                {error && (
+                    <div style={s.alertErr}>
+                        <span style={s.alertIcon}>✕</span> {error}
+                    </div>
+                )}
 
-                <p style={styles.linkText}>
-                    Chưa có tài khoản? <Link to="/register">Đăng ký</Link>
+                <form onSubmit={handleSubmit}>
+                    <div style={s.field}>
+                        <label style={s.label}>Email</label>
+                        <input
+                            style={s.input}
+                            type='email'
+                            name='email'
+                            placeholder='example@gmail.com'
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <div style={s.field}>
+                        <label style={s.label}>Mật khẩu</label>
+                        <input
+                            style={s.input}
+                            type='password'
+                            name='password'
+                            placeholder='Nhập mật khẩu'
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+
+                    <button style={{ ...s.btn, opacity: loading ? 0.75 : 1 }} disabled={loading}>
+                        {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+                    </button>
+                </form>
+
+                <p style={s.foot}>
+                    Chưa có tài khoản? <Link to='/register' style={s.link}>Đăng ký ngay</Link>
                 </p>
-            </form>
+            </div>
         </div>
     )
 }
 
-const styles = {
-    container: {
+const s = {
+    page: {
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: '#f5f5f5',
+        background: '#f5f0eb',
     },
-    form: {
-        width: '360px',
-        padding: '28px',
-        borderRadius: '12px',
+    card: {
+        width: 380,
+        padding: '36px 32px',
+        borderRadius: 16,
         background: '#fff',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+        border: '1px solid #e8ddd5',
+        boxShadow: '0 4px 24px rgba(111,78,55,0.08)',
+    },
+    logoWrap: { textAlign: 'center', marginBottom: 12 },
+    logoIcon: { fontSize: 32 },
+    title: {
+        textAlign: 'center',      // ← căn giữa
+        fontSize: 22,
+        fontWeight: 700,
+        color: '#1a0f0a',
+        margin: '0 0 6px',
     },
     desc: {
-        color: '#666',
-        fontSize: '14px',
-        marginBottom: '20px',
+        textAlign: 'center',      // ← căn giữa
+        color: '#8b7355',
+        fontSize: 13,
+        margin: '0 0 24px',
     },
-    input: {
-        width: '100%',
-        padding: '12px',
-        marginBottom: '14px',
-        borderRadius: '8px',
-        border: '1px solid #ddd',
-        fontSize: '14px',
-    },
-    button: {
-        width: '100%',
-        padding: '12px',
-        border: 'none',
-        borderRadius: '8px',
-        background: '#6f4e37',
-        color: '#fff',
-        fontSize: '15px',
-        cursor: 'pointer',
-    },
-    error: {
-        padding: '10px',
-        borderRadius: '8px',
+    alertErr: {
+        textAlign: 'center',      // ← căn giữa
+        padding: '10px 14px',
+        borderRadius: 8,
         background: '#fde8e8',
         color: '#b42318',
-        fontSize: '14px',
+        fontSize: 13,
+        marginBottom: 16,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 6,
     },
-    linkText: {
-        textAlign: 'center',
-        fontSize: '14px',
-        marginTop: '16px',
+    alertIcon: { fontSize: 12, fontWeight: 700 },
+    field: { marginBottom: 14 },
+    label: { display: 'block', fontSize: 12, fontWeight: 600, color: '#6f4e37', marginBottom: 6, letterSpacing: 0.3 },
+    input: {
+        width: '100%', padding: '11px 14px',
+        borderRadius: 8, border: '1px solid #e8ddd5',
+        fontSize: 14, background: '#faf7f4',
+        boxSizing: 'border-box', outline: 'none',
+        transition: 'border-color 0.18s',
     },
+    btn: {
+        width: '100%', padding: '13px',
+        background: '#6f4e37', color: '#fff',
+        border: 'none', borderRadius: 10,
+        fontSize: 15, fontWeight: 600,
+        cursor: 'pointer', marginTop: 4,
+        transition: 'background 0.18s',
+    },
+    foot: { textAlign: 'center', fontSize: 13, color: '#8b7355', marginTop: 20 },
+    link: { color: '#6f4e37', fontWeight: 600, textDecoration: 'none' },
 }

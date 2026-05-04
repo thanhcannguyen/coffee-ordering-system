@@ -1,3 +1,4 @@
+
 // src/pages/user/Orders.jsx
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -99,7 +100,7 @@ export default function Orders() {
 }
 
 const s = {
-    page: { background: '#f5f0eb', minHeight: '100vh', padding: '32px 0' },
+    page: { background: '#f5f0eb', minHeight: '100vh' },
     container: { maxWidth: 760, margin: '0 auto', padding: '0 24px' },
     title: { fontSize: 26, fontWeight: 600, color: '#1a0f0a', marginBottom: 24 },
     loading: { padding: 40, textAlign: 'center', color: '#8b7355' },

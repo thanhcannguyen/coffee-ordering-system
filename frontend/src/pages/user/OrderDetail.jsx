@@ -1,3 +1,4 @@
+
 // src/pages/user/OrderDetail.jsx
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -10,8 +11,6 @@ const STATUS_MAP = {
     completed: { label: 'Hoàn thành', bg: '#e7f8ec', color: '#1b7f3a' },
     cancelled: { label: 'Đã huỷ', bg: '#fde8e8', color: '#b42318' },
 }
-
-// Timeline hiển thị tiến trình đơn hàng
 const TIMELINE = ['pending', 'confirmed', 'preparing', 'completed']
 
 export default function OrderDetail() {
@@ -39,47 +38,36 @@ export default function OrderDetail() {
         <div style={s.page}>
             <div style={s.container}>
 
-                {/* Breadcrumb */}
-                <div style={s.breadcrumb}>
-                    <button style={s.backBtn} onClick={() => navigate('/orders')}>
-                        ← Lịch sử đơn hàng
-                    </button>
-                </div>
-
-                {/* Header */}
-                <div style={s.header}>
-                    <div>
-                        <h1 style={s.title}>
-                            Đơn hàng #{order._id.slice(-8).toUpperCase()}
-                        </h1>
-                        <p style={s.subtitle}>
-                            Đặt lúc {new Date(order.createdAt).toLocaleString('vi-VN')}
-                        </p>
+                {/* Back + Header — compact */}
+                <div style={s.topRow}>
+                    <div style={s.topLeft}>
+                        <button style={s.backBtn} onClick={() => navigate('/orders')}>
+                            ← Lịch sử đơn hàng
+                        </button>
+                        <h1 style={s.title}>Đơn hàng #{order._id.slice(-8).toUpperCase()}</h1>
+                        <p style={s.subtitle}>{new Date(order.createdAt).toLocaleString('vi-VN')}</p>
                     </div>
                     <span style={{ ...s.statusBadge, background: status.bg, color: status.color }}>
                         {status.label}
                     </span>
                 </div>
 
-                {/* Timeline tiến trình — chỉ hiện khi chưa huỷ */}
+                {/* Timeline — compact */}
                 {order.status !== 'cancelled' && (
-                    <div style={s.card}>
-                        <h3 style={s.cardTitle}>Tiến trình đơn hàng</h3>
+                    <div style={s.timelineCard}>
                         <div style={s.timeline}>
                             {TIMELINE.map((step, idx) => {
                                 const done = idx <= currentStep
                                 const current = idx === currentStep
-                                const info = STATUS_MAP[step]
                                 return (
                                     <div key={step} style={s.timelineStep}>
                                         <div style={{
                                             ...s.timelineDot,
                                             background: done ? '#6f4e37' : '#e8ddd5',
-                                            border: current ? '3px solid #6f4e37' : '3px solid transparent',
-                                            boxShadow: current ? '0 0 0 3px #f5f0eb' : 'none',
+                                            boxShadow: current ? '0 0 0 3px #d4b896' : 'none',
                                         }} />
-                                        <div style={{ ...s.timelineLabel, color: done ? '#1a0f0a' : '#8b7355', fontWeight: current ? 600 : 400 }}>
-                                            {info.label}
+                                        <div style={{ ...s.timelineLabel, color: done ? '#3d2410' : '#a09080', fontWeight: current ? 700 : 400 }}>
+                                            {STATUS_MAP[step].label}
                                         </div>
                                         {idx < TIMELINE.length - 1 && (
                                             <div style={{ ...s.timelineLine, background: idx < currentStep ? '#6f4e37' : '#e8ddd5' }} />
@@ -91,13 +79,15 @@ export default function OrderDetail() {
                     </div>
                 )}
 
+                {/* Layout 2 cột chính */}
                 <div style={s.layout}>
 
-                    {/* Cột trái */}
-                    <div>
-                        {/* Sản phẩm đã đặt */}
-                        <div style={s.card}>
-                            <h3 style={s.cardTitle}>Sản phẩm đã đặt</h3>
+                    {/* Cột trái — Sản phẩm */}
+                    <div style={s.card}>
+                        <h3 style={s.cardTitle}>Sản phẩm đã đặt</h3>
+
+                        {/* CHỈ vùng này scroll */}
+                        <div style={s.itemScroll}>
                             {order.items.map((item, idx) => (
                                 <div key={idx} style={s.itemRow}>
                                     <div style={s.itemLeft}>
@@ -106,14 +96,12 @@ export default function OrderDetail() {
                                                 src={item.image}
                                                 alt={item.name}
                                                 style={s.thumb}
-                                                onError={e => { e.target.src = 'https://placehold.co/56x56/f5f0eb/6f4e37?text=☕' }}
+                                                onError={e => { e.target.src = 'https://placehold.co/48x48/f5f0eb/6f4e37?text=Coffee' }}
                                             />
                                         )}
                                         <div>
                                             <div style={s.itemName}>{item.name}</div>
-                                            <div style={s.itemMeta}>
-                                                {item.price.toLocaleString('vi-VN')}đ × {item.quantity}
-                                            </div>
+                                            <div style={s.itemMeta}>{item.price.toLocaleString('vi-VN')}đ × {item.quantity}</div>
                                         </div>
                                     </div>
                                     <div style={s.itemTotal}>
@@ -121,25 +109,23 @@ export default function OrderDetail() {
                                     </div>
                                 </div>
                             ))}
+                        </div>
 
-                            <div style={s.divider} />
-
-                            <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 17 }}>
-                                <span>Tổng cộng</span>
-                                <span style={{ color: '#6f4e37' }}>
-                                    {order.totalAmount.toLocaleString('vi-VN')}đ
-                                </span>
-                            </div>
+                        <div style={s.divider} />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 15 }}>
+                            <span>Tổng cộng</span>
+                            <span style={{ color: '#6f4e37' }}>{order.totalAmount.toLocaleString('vi-VN')}đ</span>
                         </div>
                     </div>
 
-                    {/* Cột phải */}
-                    <div>
-                        {/* Thông tin giao hàng */}
+                    {/* Cột phải — Info + nút */}
+                    <div style={s.rightCol}>
+
+                        {/* Thông tin nhận hàng */}
                         <div style={s.card}>
                             <h3 style={s.cardTitle}>Thông tin nhận hàng</h3>
                             {[
-                                { label: 'Họ tên', value: order.shippingInfo?.fullName }, // ← đúng field
+                                { label: 'Họ tên', value: order.shippingInfo?.fullName },
                                 { label: 'SĐT', value: order.shippingInfo?.phone },
                                 { label: 'Địa chỉ', value: order.shippingInfo?.address },
                             ].map(row => (
@@ -150,12 +136,12 @@ export default function OrderDetail() {
                             ))}
                         </div>
 
-                        {/* Thông tin đơn */}
+                        {/* Thông tin thanh toán */}
                         <div style={s.card}>
                             <h3 style={s.cardTitle}>Thông tin thanh toán</h3>
                             {[
                                 { label: 'Phương thức', value: order.paymentMethod },
-                                { label: 'Phí giao hàng', value: <span style={{ color: '#1b7f3a' }}>Miễn phí</span> },
+                                { label: 'Phí giao hàng', value: <span style={{ color: '#1b7f3a', fontWeight: 600 }}>Miễn phí</span> },
                             ].map(row => (
                                 <div key={row.label} style={s.infoRow}>
                                     <span style={s.infoLabel}>{row.label}</span>
@@ -163,62 +149,128 @@ export default function OrderDetail() {
                                 </div>
                             ))}
                             {order.note && (
-                                <div style={s.noteBox}>
-                                    <span style={s.infoLabel}>Ghi chú</span>
-                                    <p style={s.noteText}>{order.note}</p>
+                                <div style={{ marginTop: 8 }}>
+                                    <span style={s.infoLabel}>Ghi chú: </span>
+                                    <span style={{ fontSize: 12, color: '#1a0f0a' }}>{order.note}</span>
                                 </div>
                             )}
                         </div>
+
+                        {/* Nút */}
+                        <button style={s.menuBtn} onClick={() => navigate('/menu')}>
+                            Tiếp tục đặt hàng
+                        </button>
                     </div>
                 </div>
 
-                <button style={s.menuBtn} onClick={() => navigate('/menu')}>
-                    ☕ Tiếp tục đặt hàng
-                </button>
             </div>
         </div>
     )
 }
 
 const s = {
-    page: { background: '#f5f0eb', minHeight: '100vh', padding: '32px 0' },
-    container: { maxWidth: 900, margin: '0 auto', padding: '0 24px' },
+    // Trang chiếm đúng khoảng giữa header và footer
+    page: {
+        background: '#ede8e2',
+        padding: '14px 0',
+    },
+    container: {
+        maxWidth: 980,
+        margin: '0 auto',
+        padding: '0 24px',
+    },
     loading: { padding: 40, textAlign: 'center', color: '#8b7355' },
 
-    breadcrumb: { marginBottom: 16 },
-    backBtn: { background: 'none', border: 'none', color: '#6f4e37', fontSize: 14, cursor: 'pointer', padding: 0, fontWeight: 500 },
+    // Header row gọn
+    topRow: {
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'flex-start', marginBottom: 10,
+    },
+    topLeft: { display: 'flex', flexDirection: 'column', gap: 2 },
+    backBtn: {
+        background: 'none', border: 'none',
+        color: '#6f4e37', fontSize: 13,
+        cursor: 'pointer', padding: 0,
+        fontWeight: 600, marginBottom: 2,
+        textAlign: 'left',
+    },
+    title: { fontSize: 22, fontWeight: 700, color: '#1a0f0a', margin: 0 },
+    subtitle: { fontSize: 12, color: '#8b7355', margin: 0 },
+    statusBadge: {
+        fontSize: 12, fontWeight: 600,
+        padding: '5px 14px', borderRadius: 20,
+        marginTop: 4,
+    },
 
-    header: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 24 },
-    title: { fontSize: 24, fontWeight: 600, color: '#1a0f0a', margin: '0 0 4px' },
-    subtitle: { fontSize: 13, color: '#8b7355', margin: 0 },
-    statusBadge: { fontSize: 13, fontWeight: 500, padding: '6px 16px', borderRadius: 20 },
-
-    // Timeline
-    card: { background: '#fff', borderRadius: 12, border: '1px solid #e8ddd5', padding: 24, marginBottom: 16 },
-    cardTitle: { fontSize: 14, fontWeight: 600, color: '#1a0f0a', margin: '0 0 18px' },
-    timeline: { display: 'flex', alignItems: 'flex-start', gap: 0 },
-    timelineStep: { display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, position: 'relative' },
-    timelineDot: { width: 14, height: 14, borderRadius: '50%', marginBottom: 8, zIndex: 1 },
+    // Timeline compact — không có card wrap, chỉ border nhẹ
+    timelineCard: {
+        background: '#fff',
+        borderRadius: 10,
+        border: '1.5px solid #d4c4b0',
+        padding: '10px 20px',
+        marginBottom: 10,
+    },
+    timeline: { display: 'flex', alignItems: 'flex-start' },
+    timelineStep: {
+        display: 'flex', flexDirection: 'column',
+        alignItems: 'center', flex: 1, position: 'relative',
+    },
+    timelineDot: { width: 12, height: 12, borderRadius: '50%', marginBottom: 6, zIndex: 1 },
     timelineLabel: { fontSize: 11, textAlign: 'center', lineHeight: 1.3 },
-    timelineLine: { position: 'absolute', top: 7, left: '50%', width: '100%', height: 2, zIndex: 0 },
+    timelineLine: { position: 'absolute', top: 6, left: '50%', width: '100%', height: 2, zIndex: 0 },
 
-    layout: { display: 'grid', gridTemplateColumns: '1fr 280px', gap: 16 },
+    // Layout 2 cột
+    layout: {
+        display: 'grid',
+        gridTemplateColumns: '1fr 260px',
+        gap: 12,
+        alignItems: 'start',
+    },
 
-    // Items
-    itemRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #f5f0eb' },
-    itemLeft: { display: 'flex', alignItems: 'center', gap: 12 },
-    thumb: { width: 52, height: 52, borderRadius: 8, objectFit: 'cover', flexShrink: 0 },
-    itemName: { fontSize: 14, fontWeight: 500, color: '#1a0f0a', marginBottom: 4 },
+    // Card chung — padding nhỏ hơn
+    card: {
+        background: '#fff',
+        borderRadius: 12,
+        border: '1.5px solid #d4c4b0',
+        boxShadow: '0 1px 8px rgba(111,78,55,0.07)',
+        padding: '22px 20px',
+        marginBottom: 10,
+    },
+    cardTitle: { fontSize: 14, fontWeight: 700, color: '#1a0f0a', margin: '0 0 12px' },
+
+    rightCol: { display: 'flex', flexDirection: 'column' },
+
+    // Scroll chỉ trong bảng sản phẩm — maxHeight vừa phải
+    itemScroll: {
+        overflowY: 'auto',
+        maxHeight: 260,
+        marginRight: -4,
+        paddingRight: 4,
+    },
+
+    itemRow: {
+        display: 'flex', justifyContent: 'space-between',
+        alignItems: 'center', padding: '7px 0',
+        borderBottom: '1px solid #f0e8e0',
+    },
+    itemLeft: { display: 'flex', alignItems: 'center', gap: 10 },
+    thumb: { width: 44, height: 44, borderRadius: 7, objectFit: 'cover', flexShrink: 0 },
+    itemName: { fontSize: 14, fontWeight: 600, color: '#1a0f0a', marginBottom: 2 },
     itemMeta: { fontSize: 12, color: '#8b7355' },
-    itemTotal: { fontSize: 14, fontWeight: 600, color: '#6f4e37' },
-    divider: { borderTop: '1px solid #e8ddd5', margin: '16px 0' },
+    itemTotal: { fontSize: 14, fontWeight: 700, color: '#6f4e37', flexShrink: 0 },
+    divider: { borderTop: '1.5px solid #e8ddd5', margin: '10px 0' },
 
-    // Info
-    infoRow: { display: 'flex', justifyContent: 'space-between', padding: '9px 0', borderBottom: '1px solid #f5f0eb' },
+    infoRow: {
+        display: 'flex', justifyContent: 'space-between',
+        padding: '6px 0', borderBottom: '1px solid #f0e8e0',
+    },
     infoLabel: { fontSize: 12, color: '#8b7355' },
-    infoValue: { fontSize: 13, fontWeight: 500, color: '#1a0f0a', textAlign: 'right', maxWidth: '60%' },
-    noteBox: { paddingTop: 10 },
-    noteText: { fontSize: 13, color: '#1a0f0a', margin: '4px 0 0', lineHeight: 1.5 },
+    infoValue: { fontSize: 13, fontWeight: 600, color: '#1a0f0a', textAlign: 'right', maxWidth: '65%' },
 
-    menuBtn: { display: 'block', margin: '8px auto 0', padding: '12px 32px', background: '#6f4e37', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, cursor: 'pointer', fontWeight: 500 },
+    menuBtn: {
+        width: '100%', padding: '13px',
+        background: '#6f4e37', color: '#fff',
+        border: 'none', borderRadius: 10,
+        fontSize: 14, fontWeight: 700, cursor: 'pointer',
+    },
 }

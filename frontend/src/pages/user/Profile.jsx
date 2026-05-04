@@ -1,3 +1,4 @@
+
 // src/pages/user/Profile.jsx
 import { useState } from 'react'
 import { useAuth } from '../../context/AuthContext'
@@ -156,7 +157,7 @@ export default function Profile() {
 }
 
 const s = {
-    page: { background: '#f5f0eb', minHeight: '100vh', padding: '32px 0' },
+    page: { background: '#f5f0eb', minHeight: '100vh' },
     container: { maxWidth: 860, margin: '0 auto', padding: '0 24px' },
     title: { fontSize: 26, fontWeight: 600, color: '#1a0f0a', marginBottom: 24 },
     layout: { display: 'grid', gridTemplateColumns: '220px 1fr', gap: 20, alignItems: 'start' },

@@ -377,3 +377,98 @@ code {
     background: #fdf8f4;
     padding: 11px 8px;
 }
+
+
+/* ── Header user hover effects ── */
+.header-nav-link {
+    padding: 6px 14px;
+    border-radius: 8px;
+    color: #8b7355;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.18s, color 0.18s;
+}
+
+.header-nav-link:hover {
+    background: #f5f0eb;
+    color: #6f4e37;
+}
+
+.header-cart-btn {
+    position: relative;
+    font-size: 20px;
+    text-decoration: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    line-height: 1;
+    transition: background 0.18s, transform 0.15s;
+}
+
+.header-cart-btn:hover {
+    background: #f5f0eb;
+    transform: scale(1.12);
+}
+
+.header-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: #6f4e37;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.18s, transform 0.15s, box-shadow 0.18s;
+}
+
+.header-avatar:hover {
+    background: #5a3e2b;
+    transform: scale(1.08);
+    box-shadow: 0 2px 10px rgba(111, 78, 55, 0.25);
+}
+
+.header-logout-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid #e8ddd5;
+    background: #fff;
+    color: #8b7355;
+    font-size: 13px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.18s, border-color 0.18s, color 0.18s;
+}
+
+.header-logout-btn:hover {
+    background: #fde8e8;
+    border-color: #f5c5c2;
+    color: #b42318;
+}
+
+.header-logo {
+    font-weight: 600;
+    font-size: 18px;
+    color: #6f4e37;
+    text-decoration: none;
+    margin-right: 16px;
+    transition: opacity 0.18s, transform 0.18s;
+    display: inline-block;
+}
+
+.header-logo:hover {
+    opacity: 0.8;
+    transform: scale(1.04);
+}
+
+/* Nav link active — trang hiện tại sáng lên */
+.header-nav-link.active {
+    background: #f5f0eb;
+    color: #6f4e37;
+    font-weight: 600;
+}

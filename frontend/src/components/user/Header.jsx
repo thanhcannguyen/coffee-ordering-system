@@ -1,12 +1,11 @@
-
 // src/components/user/Header.jsx
-import { Link, useNavigate } from 'react-router-dom'
+import { NavLink, Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { useCart } from '../../context/CartContext.jsx'
 
 export default function Header() {
     const { user, logout } = useAuth()
-    const { cartCount } = useCart()       // ← lấy số lượng từ CartContext
+    const { cartCount } = useCart()
     const navigate = useNavigate()
 
     const handleLogout = () => {
@@ -14,30 +13,53 @@ export default function Header() {
         navigate('/login')
     }
 
+    // Scroll lên đầu trang khi click
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     return (
         <header style={s.header}>
-            <Link to='/menu' style={s.logo}>☕ Coffee Order</Link>
+
+            {/* Logo — click scroll lên đầu */}
+            <Link to='/menu' className='header-logo' onClick={scrollToTop}>
+                ☕ Coffee Order
+            </Link>
 
             <nav style={s.nav}>
-                <Link to='/menu' style={s.navLink}>Thực đơn</Link>
-                <Link to='/orders' style={s.navLink}>Đơn hàng</Link>
-                <Link to='/profile' style={s.navLink}>Hồ sơ</Link>
+                {/* Thực đơn — click scroll lên đầu */}
+                <NavLink
+                    to='/menu'
+                    className='header-nav-link'
+                    onClick={scrollToTop}
+                >
+                    Thực đơn
+                </NavLink>
+
+                <NavLink to='/orders' className='header-nav-link'>Đơn hàng</NavLink>
+                <NavLink to='/profile' className='header-nav-link'>Hồ sơ</NavLink>
             </nav>
 
             <div style={s.right}>
-                {/* Icon giỏ hàng + badge số lượng */}
-                <Link to='/cart' style={s.cartBtn}>
+
+                <Link to='/cart' className='header-cart-btn'>
                     🛒
                     {cartCount > 0 && (
-                        <span style={s.badge}>{cartCount}</span>
+                        <span style={s.badge}>
+                            {cartCount > 99 ? '99+' : cartCount}
+                        </span>
                     )}
                 </Link>
 
-                <div style={s.avatar}>
+                <div
+                    className='header-avatar'
+                    onClick={() => navigate('/profile')}
+                    title='Xem hồ sơ'
+                >
                     {user?.name?.charAt(0).toUpperCase()}
                 </div>
 
-                <button onClick={handleLogout} style={s.logoutBtn}>
+                <button className='header-logout-btn' onClick={handleLogout}>
                     Đăng xuất
                 </button>
             </div>
@@ -47,44 +69,29 @@ export default function Header() {
 
 const s = {
     header: {
-        height: 60, background: '#fff',
+        height: 60,
+        background: '#fff',
         borderBottom: '1px solid #e8ddd5',
-        display: 'flex', alignItems: 'center',
-        padding: '0 32px', gap: 24,
-        position: 'sticky', top: 0, zIndex: 100,
-    },
-    logo: {
-        fontWeight: 600, fontSize: 18,
-        color: '#6f4e37', textDecoration: 'none',
-        marginRight: 16,
+        display: 'flex',
+        alignItems: 'center',
+        padding: '0 32px',
+        gap: 24,
+        position: 'sticky',
+        top: 0,
+        zIndex: 100,
     },
     nav: { display: 'flex', gap: 4, flex: 1 },
-    navLink: {
-        padding: '6px 14px', borderRadius: 8,
-        color: '#8b7355', textDecoration: 'none',
-        fontSize: 14, fontWeight: 500,
-    },
     right: { display: 'flex', alignItems: 'center', gap: 12 },
-    cartBtn: {
-        fontSize: 20, textDecoration: 'none',
-        padding: '4px 8px', borderRadius: 8,
-    },
     badge: {
-        position: 'absolute', top: -6, right: -6,
-        width: 18, height: 18, borderRadius: '50%',
-        background: '#6f4e37', color: '#fff',
+        position: 'absolute',
+        top: -4, right: -4,
+        minWidth: 18, height: 18,
+        borderRadius: 9,
+        background: '#6f4e37',
+        color: '#fff',
         fontSize: 10, fontWeight: 700,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-    },
-    avatar: {
-        width: 34, height: 34, borderRadius: '50%',
-        background: '#6f4e37', color: '#fff',
-        display: 'flex', alignItems: 'center',
-        justifyContent: 'center', fontWeight: 600, fontSize: 14,
-    },
-    logoutBtn: {
-        padding: '6px 14px', borderRadius: 8,
-        border: '1px solid #e8ddd5', background: '#fff',
-        color: '#8b7355', fontSize: 13, cursor: 'pointer',
+        padding: '0 4px',
+        boxSizing: 'border-box',
     },
 }
