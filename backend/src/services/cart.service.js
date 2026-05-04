@@ -45,10 +45,10 @@ export const addToCartService = async (userId, productId, quantity = 1) => {
     const product = await Product.findById(productId)
     // 2. Nếu không có hoặc ngừng bán → báo lỗi
     if (!product) {
-        throw new ('Sản phẩm này không tồn tại')
+        throw new Error('Sản phẩm này không tồn tại')
     }
     if (!product.isAvailable) {
-        throw new ('Sản phẩm này khôn có sẵn')
+        throw new Error('Sản phẩm này khôn có sẵn')
     }
 
     // 3. Tìm giỏ hàng của user

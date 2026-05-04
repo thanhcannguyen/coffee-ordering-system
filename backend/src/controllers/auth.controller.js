@@ -271,8 +271,7 @@ export const login = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({
-            message: "Lỗi Server",
-            error: error.message
+            message: "Lỗi Server, vui lòng thử lại sau",
         })
     }
 }
