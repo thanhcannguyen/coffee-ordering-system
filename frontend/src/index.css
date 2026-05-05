@@ -472,3 +472,323 @@ code {
     color: #6f4e37;
     font-weight: 600;
 }
+
+/* ============================================
+   RESPONSIVE — Mobile First
+   ============================================ */
+
+/* Auth card — responsive */
+.auth-card {
+    width: 100%;
+    max-width: 400px;
+    padding: 36px 32px;
+    border-radius: 16px;
+    background: #fff;
+    border: 1px solid #e8ddd5;
+    box-shadow: 0 4px 24px rgba(111, 78, 55, 0.08);
+    box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+    .auth-card {
+        padding: 28px 20px;
+        border-radius: 12px;
+    }
+}
+
+/* Header — hamburger & nav */
+.header-nav-desktop {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+}
+
+.header-hamburger {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6f4e37;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.header-logout-desktop {
+    display: inline-block;
+}
+
+.mobile-nav-link {
+    display: block;
+    padding: 14px 24px;
+    color: #6f4e37;
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    border-bottom: 1px solid #f0e8e0;
+    transition: background 0.15s;
+}
+
+.mobile-nav-link:hover {
+    background: #faf7f4;
+}
+
+.mobile-nav-logout {
+    display: block;
+    width: 100%;
+    padding: 14px 24px;
+    background: none;
+    border: none;
+    text-align: left;
+    font-size: 15px;
+    color: #b42318;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+@media (max-width: 640px) {
+    .header-nav-desktop {
+        display: none;
+    }
+
+    .header-hamburger {
+        display: block;
+    }
+
+    .header-logout-desktop {
+        display: none !important;
+    }
+}
+
+/* Menu page — banner & grid */
+@media (max-width: 640px) {
+
+    /* Banner */
+    .banner-slide {
+        height: 180px !important;
+    }
+
+    .banner-content {
+        padding: 0 20px !important;
+        flex: 0 0 100% !important;
+    }
+
+    .banner-img-wrap {
+        display: none !important;
+    }
+
+    .banner-title {
+        font-size: 18px !important;
+    }
+
+    .banner-subtitle {
+        font-size: 12px !important;
+    }
+
+    /* Product grid — 2 cột trên mobile */
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 12px !important;
+    }
+
+    .product-img {
+        height: 130px !important;
+    }
+}
+
+@media (max-width: 380px) {
+
+    /* 1 cột trên màn hình rất nhỏ */
+    .product-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Cart — layout responsive */
+@media (max-width: 768px) {
+    .cart-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .cart-summary {
+        width: 100% !important;
+    }
+
+    .cart-table-head {
+        display: none !important;
+    }
+
+    .cart-item-row {
+        flex-wrap: wrap !important;
+        gap: 10px !important;
+    }
+
+    .cart-col-product {
+        flex: 0 0 100% !important;
+    }
+
+    .cart-col-qty {
+        flex: 1 !important;
+        justify-content: flex-start !important;
+    }
+
+    .cart-col-price {
+        flex: 1 !important;
+        justify-content: flex-end !important;
+    }
+}
+
+/* Checkout — layout responsive */
+@media (max-width: 768px) {
+    .checkout-layout {
+        grid-template-columns: 1fr !important;
+    }
+
+    .checkout-form-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* Admin — sidebar responsive */
+@media (max-width: 768px) {
+    .admin-layout {
+        flex-direction: column !important;
+    }
+
+    .admin-sidebar {
+        width: 100% !important;
+        flex-direction: row !important;
+        padding: 10px 16px !important;
+        align-items: center !important;
+        min-height: auto !important;
+        overflow-x: auto !important;
+    }
+
+    .admin-sidebar-logo {
+        display: none !important;
+    }
+
+    .admin-sidebar-nav {
+        flex-direction: row !important;
+        flex: 1 !important;
+        gap: 4px !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+    }
+
+    .admin-sidebar-footer {
+        display: none !important;
+    }
+
+    .admin-nav-link {
+        white-space: nowrap !important;
+        font-size: 12px !important;
+        padding: 8px 10px !important;
+    }
+
+    .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    .admin-two-col {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* General table responsive */
+@media (max-width: 640px) {
+    .admin-table-wrap {
+        overflow-x: auto !important;
+    }
+}
+
+/* Profile layout */
+@media (max-width: 640px) {
+    .profile-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* OrderDetail layout */
+@media (max-width: 640px) {
+    .order-detail-layout {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* ProductDetail card */
+@media (max-width: 640px) {
+    .product-detail-card {
+        grid-template-columns: 1fr !important;
+    }
+
+    .product-detail-img {
+        min-height: 220px !important;
+        height: 220px !important;
+    }
+}
+
+/* Cart summary — fix overflow on mobile */
+@media (max-width: 768px) {
+    .cart-summary {
+        overflow: hidden !important;
+    }
+
+    .cart-summary-row {
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+    }
+}
+
+/* ============================================
+   iOS FIXES
+   ============================================ */
+
+/* Fix chữ trắng trên iOS Safari */
+input,
+textarea,
+select {
+    -webkit-text-fill-color: #1a0f0a !important;
+    color: #1a0f0a !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    -webkit-text-fill-color: #b0a090 !important;
+    color: #b0a090 !important;
+    opacity: 1 !important;
+}
+
+/* Fix zoom khi focus input trên iOS — font-size phải >= 16px */
+input,
+textarea,
+select {
+    font-size: 16px !important;
+}
+
+/* Nhưng giữ label và text nhỏ hơn không bị ảnh hưởng */
+input[type="radio"] {
+    font-size: unset !important;
+    -webkit-text-fill-color: unset !important;
+}
+
+/* Fix nút + Thêm trên mobile thật — không wrap chữ */
+.product-add-btn {
+    white-space: nowrap !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+}
+
+/* Fix card footer trên mobile thật */
+@media (max-width: 430px) {
+    .product-card-footer {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+    }
+
+    .product-add-btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
+}

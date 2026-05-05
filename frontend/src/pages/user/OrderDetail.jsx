@@ -1,4 +1,3 @@
-
 // src/pages/user/OrderDetail.jsx
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
@@ -38,21 +37,17 @@ export default function OrderDetail() {
         <div style={s.page}>
             <div style={s.container}>
 
-                {/* Back + Header — compact */}
+                {/* Header */}
                 <div style={s.topRow}>
-                    <div style={s.topLeft}>
-                        <button style={s.backBtn} onClick={() => navigate('/orders')}>
-                            ← Lịch sử đơn hàng
-                        </button>
+                    <div>
+                        <button style={s.backBtn} onClick={() => navigate('/orders')}>← Lịch sử đơn hàng</button>
                         <h1 style={s.title}>Đơn hàng #{order._id.slice(-8).toUpperCase()}</h1>
                         <p style={s.subtitle}>{new Date(order.createdAt).toLocaleString('vi-VN')}</p>
                     </div>
-                    <span style={{ ...s.statusBadge, background: status.bg, color: status.color }}>
-                        {status.label}
-                    </span>
+                    <span style={{ ...s.statusBadge, background: status.bg, color: status.color }}>{status.label}</span>
                 </div>
 
-                {/* Timeline — compact */}
+                {/* Timeline */}
                 {order.status !== 'cancelled' && (
                     <div style={s.timelineCard}>
                         <div style={s.timeline}>
@@ -61,11 +56,7 @@ export default function OrderDetail() {
                                 const current = idx === currentStep
                                 return (
                                     <div key={step} style={s.timelineStep}>
-                                        <div style={{
-                                            ...s.timelineDot,
-                                            background: done ? '#6f4e37' : '#e8ddd5',
-                                            boxShadow: current ? '0 0 0 3px #d4b896' : 'none',
-                                        }} />
+                                        <div style={{ ...s.timelineDot, background: done ? '#6f4e37' : '#e8ddd5', boxShadow: current ? '0 0 0 3px #d4b896' : 'none' }} />
                                         <div style={{ ...s.timelineLabel, color: done ? '#3d2410' : '#a09080', fontWeight: current ? 700 : 400 }}>
                                             {STATUS_MAP[step].label}
                                         </div>
@@ -79,38 +70,26 @@ export default function OrderDetail() {
                     </div>
                 )}
 
-                {/* Layout 2 cột chính */}
-                <div style={s.layout}>
+                {/* Layout — 2 cột desktop, 1 cột mobile */}
+                <div className='order-detail-layout' style={s.layout}>
 
-                    {/* Cột trái — Sản phẩm */}
+                    {/* Sản phẩm */}
                     <div style={s.card}>
                         <h3 style={s.cardTitle}>Sản phẩm đã đặt</h3>
-
-                        {/* CHỈ vùng này scroll */}
                         <div style={s.itemScroll}>
                             {order.items.map((item, idx) => (
                                 <div key={idx} style={s.itemRow}>
                                     <div style={s.itemLeft}>
-                                        {item.image && (
-                                            <img
-                                                src={item.image}
-                                                alt={item.name}
-                                                style={s.thumb}
-                                                onError={e => { e.target.src = 'https://placehold.co/48x48/f5f0eb/6f4e37?text=Coffee' }}
-                                            />
-                                        )}
+                                        {item.image && <img src={item.image} alt={item.name} style={s.thumb} onError={e => { e.target.src = 'https://placehold.co/48x48/f5f0eb/6f4e37?text=Coffee' }} />}
                                         <div>
                                             <div style={s.itemName}>{item.name}</div>
                                             <div style={s.itemMeta}>{item.price.toLocaleString('vi-VN')}đ × {item.quantity}</div>
                                         </div>
                                     </div>
-                                    <div style={s.itemTotal}>
-                                        {(item.price * item.quantity).toLocaleString('vi-VN')}đ
-                                    </div>
+                                    <div style={s.itemTotal}>{(item.price * item.quantity).toLocaleString('vi-VN')}đ</div>
                                 </div>
                             ))}
                         </div>
-
                         <div style={s.divider} />
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, fontSize: 15 }}>
                             <span>Tổng cộng</span>
@@ -118,10 +97,8 @@ export default function OrderDetail() {
                         </div>
                     </div>
 
-                    {/* Cột phải — Info + nút */}
-                    <div style={s.rightCol}>
-
-                        {/* Thông tin nhận hàng */}
+                    {/* Cột phải */}
+                    <div>
                         <div style={s.card}>
                             <h3 style={s.cardTitle}>Thông tin nhận hàng</h3>
                             {[
@@ -136,7 +113,6 @@ export default function OrderDetail() {
                             ))}
                         </div>
 
-                        {/* Thông tin thanh toán */}
                         <div style={s.card}>
                             <h3 style={s.cardTitle}>Thông tin thanh toán</h3>
                             {[
@@ -148,129 +124,45 @@ export default function OrderDetail() {
                                     <span style={s.infoValue}>{row.value}</span>
                                 </div>
                             ))}
-                            {order.note && (
-                                <div style={{ marginTop: 8 }}>
-                                    <span style={s.infoLabel}>Ghi chú: </span>
-                                    <span style={{ fontSize: 12, color: '#1a0f0a' }}>{order.note}</span>
-                                </div>
-                            )}
+                            {order.note && <div style={{ marginTop: 8, fontSize: 12, color: '#1a0f0a' }}><span style={s.infoLabel}>Ghi chú: </span>{order.note}</div>}
                         </div>
 
-                        {/* Nút */}
-                        <button style={s.menuBtn} onClick={() => navigate('/menu')}>
-                            Tiếp tục đặt hàng
-                        </button>
+                        <button style={s.menuBtn} onClick={() => navigate('/menu')}>Tiếp tục đặt hàng</button>
                     </div>
                 </div>
-
             </div>
         </div>
     )
 }
 
 const s = {
-    // Trang chiếm đúng khoảng giữa header và footer
-    page: {
-        background: '#ede8e2',
-        padding: '14px 0',
-    },
-    container: {
-        maxWidth: 980,
-        margin: '0 auto',
-        padding: '0 24px',
-    },
+    page: { background: '#ede8e2', padding: '14px 0' },
+    container: { maxWidth: 980, margin: '0 auto', padding: '0 16px' },
     loading: { padding: 40, textAlign: 'center', color: '#8b7355' },
-
-    // Header row gọn
-    topRow: {
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'flex-start', marginBottom: 10,
-    },
-    topLeft: { display: 'flex', flexDirection: 'column', gap: 2 },
-    backBtn: {
-        background: 'none', border: 'none',
-        color: '#6f4e37', fontSize: 13,
-        cursor: 'pointer', padding: 0,
-        fontWeight: 600, marginBottom: 2,
-        textAlign: 'left',
-    },
-    title: { fontSize: 22, fontWeight: 700, color: '#1a0f0a', margin: 0 },
+    topRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10, flexWrap: 'wrap', gap: 10 },
+    backBtn: { background: 'none', border: 'none', color: '#6f4e37', fontSize: 13, cursor: 'pointer', padding: 0, fontWeight: 600, marginBottom: 2, display: 'block' },
+    title: { fontSize: 20, fontWeight: 700, color: '#1a0f0a', margin: '0 0 2px' },
     subtitle: { fontSize: 12, color: '#8b7355', margin: 0 },
-    statusBadge: {
-        fontSize: 12, fontWeight: 600,
-        padding: '5px 14px', borderRadius: 20,
-        marginTop: 4,
-    },
-
-    // Timeline compact — không có card wrap, chỉ border nhẹ
-    timelineCard: {
-        background: '#fff',
-        borderRadius: 10,
-        border: '1.5px solid #d4c4b0',
-        padding: '10px 20px',
-        marginBottom: 10,
-    },
+    statusBadge: { fontSize: 12, fontWeight: 600, padding: '5px 14px', borderRadius: 20 },
+    timelineCard: { background: '#fff', borderRadius: 10, border: '1.5px solid #d4c4b0', padding: '10px 16px', marginBottom: 10 },
     timeline: { display: 'flex', alignItems: 'flex-start' },
-    timelineStep: {
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', flex: 1, position: 'relative',
-    },
+    timelineStep: { display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, position: 'relative' },
     timelineDot: { width: 12, height: 12, borderRadius: '50%', marginBottom: 6, zIndex: 1 },
-    timelineLabel: { fontSize: 11, textAlign: 'center', lineHeight: 1.3 },
+    timelineLabel: { fontSize: 10, textAlign: 'center', lineHeight: 1.3 },
     timelineLine: { position: 'absolute', top: 6, left: '50%', width: '100%', height: 2, zIndex: 0 },
-
-    // Layout 2 cột
-    layout: {
-        display: 'grid',
-        gridTemplateColumns: '1fr 260px',
-        gap: 12,
-        alignItems: 'start',
-    },
-
-    // Card chung — padding nhỏ hơn
-    card: {
-        background: '#fff',
-        borderRadius: 12,
-        border: '1.5px solid #d4c4b0',
-        boxShadow: '0 1px 8px rgba(111,78,55,0.07)',
-        padding: '22px 20px',
-        marginBottom: 10,
-    },
+    layout: { display: 'grid', gridTemplateColumns: '1fr 260px', gap: 12, alignItems: 'start' },
+    card: { background: '#fff', borderRadius: 12, border: '1.5px solid #d4c4b0', boxShadow: '0 1px 8px rgba(111,78,55,0.07)', padding: '18px 16px', marginBottom: 10 },
     cardTitle: { fontSize: 14, fontWeight: 700, color: '#1a0f0a', margin: '0 0 12px' },
-
-    rightCol: { display: 'flex', flexDirection: 'column' },
-
-    // Scroll chỉ trong bảng sản phẩm — maxHeight vừa phải
-    itemScroll: {
-        overflowY: 'auto',
-        maxHeight: 260,
-        marginRight: -4,
-        paddingRight: 4,
-    },
-
-    itemRow: {
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'center', padding: '7px 0',
-        borderBottom: '1px solid #f0e8e0',
-    },
+    itemScroll: { overflowY: 'auto', maxHeight: 260 },
+    itemRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '7px 0', borderBottom: '1px solid #f0e8e0' },
     itemLeft: { display: 'flex', alignItems: 'center', gap: 10 },
     thumb: { width: 44, height: 44, borderRadius: 7, objectFit: 'cover', flexShrink: 0 },
-    itemName: { fontSize: 14, fontWeight: 600, color: '#1a0f0a', marginBottom: 2 },
+    itemName: { fontSize: 13, fontWeight: 600, color: '#1a0f0a', marginBottom: 2 },
     itemMeta: { fontSize: 12, color: '#8b7355' },
-    itemTotal: { fontSize: 14, fontWeight: 700, color: '#6f4e37', flexShrink: 0 },
+    itemTotal: { fontSize: 13, fontWeight: 700, color: '#6f4e37', flexShrink: 0 },
     divider: { borderTop: '1.5px solid #e8ddd5', margin: '10px 0' },
-
-    infoRow: {
-        display: 'flex', justifyContent: 'space-between',
-        padding: '6px 0', borderBottom: '1px solid #f0e8e0',
-    },
-    infoLabel: { fontSize: 12, color: '#8b7355' },
-    infoValue: { fontSize: 13, fontWeight: 600, color: '#1a0f0a', textAlign: 'right', maxWidth: '65%' },
-
-    menuBtn: {
-        width: '100%', padding: '13px',
-        background: '#6f4e37', color: '#fff',
-        border: 'none', borderRadius: 10,
-        fontSize: 14, fontWeight: 700, cursor: 'pointer',
-    },
+    infoRow: { display: 'flex', justifyContent: 'space-between', padding: '6px 0', borderBottom: '1px solid #f0e8e0', gap: 8 },
+    infoLabel: { fontSize: 12, color: '#8b7355', flexShrink: 0 },
+    infoValue: { fontSize: 13, fontWeight: 600, color: '#1a0f0a', textAlign: 'right' },
+    menuBtn: { width: '100%', padding: '13px', background: '#6f4e37', color: '#fff', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' },
 }

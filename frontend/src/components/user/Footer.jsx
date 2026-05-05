@@ -1,4 +1,3 @@
-
 // src/components/user/Footer.jsx
 export default function Footer() {
     return (
@@ -11,9 +10,14 @@ export default function Footer() {
 
 const s = {
     footer: {
-        borderTop: '1px solid #e8ddd5', padding: '20px 32px',
-        display: 'flex', justifyContent: 'space-between',
-        alignItems: 'center', background: '#fff',
+        borderTop: '1px solid #e8ddd5',
+        padding: '16px 20px',
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        gap: 8,
+        background: '#fff',
     },
     brand: { fontWeight: 600, color: '#6f4e37', fontSize: 15 },
     copy: { fontSize: 13, color: '#8b7355' },
