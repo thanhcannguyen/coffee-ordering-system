@@ -792,3 +792,213 @@ input[type="radio"] {
         text-align: center !important;
     }
 }
+
+/* ============================================
+   ADMIN — Mobile Bottom Nav & Common
+   ============================================ */
+
+/* Bottom nav links */
+.admin-mobile-nav-link {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 4px;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    font-size: 10px;
+    gap: 2px;
+    transition: color 0.15s;
+}
+
+.admin-mobile-nav-link.active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+/* Admin nav link desktop */
+.admin-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: background 0.18s, color 0.18s;
+}
+
+.admin-nav-link:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+}
+
+.admin-nav-link.active {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff8f0;
+    font-weight: 600;
+}
+
+/* Admin common inputs & buttons */
+.admin-input {
+    width: 100%;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #e0d3c8;
+    font-size: 14px;
+    background: #faf7f4;
+    box-sizing: border-box;
+    outline: none;
+    color: #1a0f0a;
+    -webkit-text-fill-color: #1a0f0a;
+    display: block;
+    font-family: inherit;
+}
+
+.admin-btn-primary {
+    width: 100%;
+    padding: 11px;
+    background: #6f4e37;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+    font-family: inherit;
+}
+
+.admin-btn-secondary {
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    color: #8b7355;
+    border: 1px solid #e8ddd5;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-btn-edit {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid #d4c4b4;
+    background: #f5f0eb;
+    color: #6f4e37;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 6px;
+    font-family: inherit;
+}
+
+.admin-btn-del {
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: none;
+    background: #fde8e8;
+    color: #b42318;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-search-input {
+    padding: 9px 14px;
+    border-radius: 8px;
+    border: 1.5px solid #e0d3c8;
+    font-size: 14px;
+    background: #fff;
+    outline: none;
+    color: #1a0f0a;
+    -webkit-text-fill-color: #1a0f0a;
+    font-family: inherit;
+}
+
+.admin-filter-btn {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e0d3c8;
+    background: #fff;
+    color: #6f4e37;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.admin-filter-btn.active {
+    background: #6f4e37;
+    color: #fff;
+    border-color: #6f4e37;
+}
+
+.admin-next-btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 4px;
+    font-family: inherit;
+    white-space: nowrap;
+}
+
+.admin-cancel-btn {
+    padding: 5px 10px;
+    border-radius: 6px;
+    border: none;
+    background: #fde8e8;
+    color: #b42318;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.admin-tr:hover {
+    background: #faf7f4;
+}
+
+.admin-stat-card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #e8ddd5;
+    padding: 18px 20px;
+}
+
+.admin-order-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f5f0eb;
+}
+
+/* Admin filter select — đồng bộ với admin-filter-btn */
+.admin-filter-select {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1.5px solid #e0d3c8;
+    background: #fff;
+    color: #6f4e37;
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    font-family: inherit;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%236f4e37' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 28px;
+}
+
+.admin-filter-select:focus {
+    border-color: #6f4e37;
+}
