@@ -24,7 +24,13 @@ export default function Login() {
             login(res.data.token, res.data.data)
             navigate(res.data.data.role === 'admin' ? '/admin' : '/menu')
         } catch (err) {
-            setError(err.response?.data?.message || 'Đăng nhập thất bại')
+            const msg = err.response?.data?.message || ''
+            // Nếu backend trả về lỗi chưa xác minh → redirect sang verify-email
+            if (err.response?.status === 403 || msg.toLowerCase().includes('xác minh') || msg.toLowerCase().includes('verify')) {
+                navigate('/verify-email', { state: { email: formData.email } })
+                return
+            }
+            setError(msg || 'Đăng nhập thất bại')
         } finally {
             setLoading(false)
         }

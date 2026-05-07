@@ -8,10 +8,12 @@ export default function VerifyEmail() {
     const [email, setEmail] = useState(location.state?.email || '')
     const [otp, setOtp] = useState('')
     const [loading, setLoading] = useState(false)
+    const [resendLoading, setResendLoading] = useState(false)
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
     const [timeLeft, setTimeLeft] = useState(5 * 60)
     const [expired, setExpired] = useState(false)
+    const [resendCooldown, setResendCooldown] = useState(0)
 
     useEffect(() => {
         if (timeLeft <= 0) { setExpired(true); return }
@@ -19,7 +21,30 @@ export default function VerifyEmail() {
         return () => clearTimeout(timer)
     }, [timeLeft])
 
+    useEffect(() => {
+        if (resendCooldown <= 0) return
+        const timer = setTimeout(() => setResendCooldown(t => t - 1), 1000)
+        return () => clearTimeout(timer)
+    }, [resendCooldown])
+
     const formatTime = (s) => `${Math.floor(s / 60).toString().padStart(2, '0')}:${(s % 60).toString().padStart(2, '0')}`
+
+    const handleResend = async () => {
+        if (!email || resendCooldown > 0) return
+        setResendLoading(true); setMessage(''); setError('')
+        try {
+            await axiosInstance.post('/auth/resend-otp', { email })
+            setMessage('Đã gửi lại mã OTP! Vui lòng kiểm tra email.')
+            setTimeLeft(5 * 60)
+            setExpired(false)
+            setOtp('')
+            setResendCooldown(60) // chờ 60 giây mới được gửi lại
+        } catch (err) {
+            setError(err.response?.data?.message || 'Không thể gửi lại mã OTP')
+        } finally {
+            setResendLoading(false)
+        }
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault()
@@ -42,7 +67,10 @@ export default function VerifyEmail() {
                 <p style={s.desc}>Nhập mã OTP đã được gửi đến<br /><strong style={{ color: '#6f4e37' }}>{email || 'email của bạn'}</strong></p>
 
                 <div style={{ ...s.timerBox, background: expired ? '#fde8e8' : timeLeft <= 60 ? '#fef3e2' : '#e7f8ec', color: expired ? '#b42318' : timeLeft <= 60 ? '#b45309' : '#1b7f3a', border: `1px solid ${expired ? '#f5c5c2' : timeLeft <= 60 ? '#fcd99a' : '#a3ddb4'}` }}>
-                    {expired ? '⏰ Mã OTP đã hết hạn — vui lòng đăng ký lại' : <span>⏱ Mã còn hiệu lực trong <strong>{formatTime(timeLeft)}</strong></span>}
+                    {expired
+                        ? '⏰ Mã OTP đã hết hạn — vui lòng gửi lại mã'
+                        : <span>⏱ Mã còn hiệu lực trong <strong>{formatTime(timeLeft)}</strong></span>
+                    }
                 </div>
 
                 {message && <div style={s.alertOk}>✓ {message}</div>}
@@ -57,17 +85,33 @@ export default function VerifyEmail() {
                     )}
                     <div style={s.field}>
                         <label style={s.label}>Mã OTP</label>
-                        <input style={{ ...s.input, textAlign: 'center', fontSize: 24, letterSpacing: 12, fontWeight: 600, background: expired ? '#f5f5f5' : '#faf7f4', color: expired ? '#aaa' : '#1a0f0a' }}
+                        <input
+                            style={{ ...s.input, textAlign: 'center', fontSize: 24, letterSpacing: 12, fontWeight: 600, background: expired ? '#f5f5f5' : '#faf7f4', color: expired ? '#aaa' : '#1a0f0a' }}
                             type='text' placeholder='000000' value={otp} maxLength={6} disabled={expired}
-                            onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError('') }} required />
+                            onChange={e => { setOtp(e.target.value.replace(/\D/g, '').slice(0, 6)); setError('') }} required
+                        />
                         <p style={s.hint}>Mã OTP gồm 6 chữ số</p>
                     </div>
-                    <button style={{ ...s.btn, opacity: (loading || otp.length < 6 || expired) ? 0.55 : 1, cursor: expired ? 'not-allowed' : 'pointer' }} disabled={loading || otp.length < 6 || expired}>
+                    <button
+                        style={{ ...s.btn, opacity: (loading || otp.length < 6 || expired) ? 0.55 : 1, cursor: expired ? 'not-allowed' : 'pointer' }}
+                        disabled={loading || otp.length < 6 || expired}
+                    >
                         {loading ? 'Đang xác thực...' : 'Xác thực'}
                     </button>
                 </form>
 
-                {expired && <button style={s.retryBtn} onClick={() => navigate('/register')}>← Quay lại đăng ký</button>}
+                {/* Nút gửi lại OTP - luôn hiện */}
+                <div style={s.resendBox}>
+                    <span style={{ color: '#8b7355', fontSize: 13 }}>Không nhận được mã? </span>
+                    <button
+                        style={{ ...s.resendBtn, opacity: (resendLoading || resendCooldown > 0) ? 0.5 : 1, cursor: (resendLoading || resendCooldown > 0) ? 'not-allowed' : 'pointer' }}
+                        onClick={handleResend}
+                        disabled={resendLoading || resendCooldown > 0}
+                    >
+                        {resendLoading ? 'Đang gửi...' : resendCooldown > 0 ? `Gửi lại (${resendCooldown}s)` : 'Gửi lại mã'}
+                    </button>
+                </div>
+
                 <p style={s.foot}>Đã xác thực? <Link to='/login' style={s.link}>Đăng nhập</Link></p>
             </div>
         </div>
@@ -86,7 +130,8 @@ const s = {
     input: { width: '100%', padding: '11px 14px', borderRadius: 8, border: '1px solid #e8ddd5', fontSize: 14, boxSizing: 'border-box', outline: 'none' },
     hint: { fontSize: 11, color: '#8b7355', marginTop: 6, textAlign: 'center' },
     btn: { width: '100%', padding: '13px', background: '#6f4e37', color: '#fff', border: 'none', borderRadius: 10, fontSize: 15, fontWeight: 600, marginTop: 4, cursor: 'pointer' },
-    retryBtn: { width: '100%', padding: '11px', background: '#fff', color: '#8b7355', border: '1px solid #e8ddd5', borderRadius: 10, fontSize: 14, cursor: 'pointer', marginTop: 10 },
-    foot: { textAlign: 'center', fontSize: 13, color: '#8b7355', marginTop: 20 },
+    resendBox: { display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 4, marginTop: 14 },
+    resendBtn: { background: 'none', border: 'none', color: '#6f4e37', fontWeight: 600, fontSize: 13, padding: 0, textDecoration: 'underline' },
+    foot: { textAlign: 'center', fontSize: 13, color: '#8b7355', marginTop: 14 },
     link: { color: '#6f4e37', fontWeight: 600, textDecoration: 'none' },
 }
