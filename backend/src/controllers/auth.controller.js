@@ -21,6 +21,10 @@ const sendOTPEmail = async (email, otp) => {
         },
     })
 
+    // Thêm dòng này để verify kết nối trước khi gửi
+    await transporter.verify()
+    console.log('Mail transporter OK, sending to:', email)
+
     // Gửi email thật
     await transporter.sendMail({
         // Tên người gửi hiển thị trong email
@@ -191,6 +195,48 @@ export const verifyEmail = async (req, res) => {
     }
 }
 
+
+// controller: Gửi lại OTP
+// POST /api/auth/resend-otp
+export const resendOTP = async (req, res) => {
+    try {
+        const { email } = req.body
+
+        if (!email) {
+            return res.status(400).json({ message: 'Vui lòng cung cấp email' })
+        }
+
+        const user = await User.findOne({ email })
+
+        if (!user) {
+            return res.status(404).json({ message: 'Không tìm thấy tài khoản với email này' })
+        }
+
+        if (user.isEmailVerified) {
+            return res.status(400).json({ message: 'Email này đã được xác minh' })
+        }
+
+        // Tạo OTP mới
+        const otp = Math.floor(100000 + Math.random() * 900000).toString()
+        const otpExpire = new Date(Date.now() + 10 * 60 * 1000)
+
+        await User.findByIdAndUpdate(user._id, {
+            emailOTP: otp,
+            emailOTPExpire: otpExpire,
+        })
+
+        await sendOTPEmail(email, otp)
+
+        res.status(200).json({
+            success: true,
+            message: 'Đã gửi lại mã OTP, vui lòng kiểm tra email',
+        })
+
+    } catch (error) {
+        console.error('Lỗi resendOTP:', error)
+        res.status(500).json({ message: 'Lỗi server, vui lòng thử lại sau' })
+    }
+}
 
 
 // controller xử lý đăng nhập
