@@ -1,33 +1,35 @@
 
 import User from '../models/user.model.js'
 import bcrypt from 'bcryptjs'               // Import thư viện bcryptjs để mã hóa (hash) mật khẩu
-import nodemailer from 'nodemailer'         // Import thư viện nodemailer để gửi email từ backend
+
 import jwt from 'jsonwebtoken'
 
 // Hàm có nhiệm vụ gửi email otp
 const sendOTPEmail = async (email, otp) => {
-    const transporter = nodemailer.createTransport({
-        host: process.env.BREVO_HOST,
-        port: Number(process.env.BREVO_PORT),
-        secure: false,
-        auth: {
-            user: process.env.BREVO_USER,
-            pass: process.env.BREVO_PASS,
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'api-key': process.env.BREVO_API_KEY,
         },
+        body: JSON.stringify({
+            sender: { name: 'Coffee Shop', email: process.env.BREVO_FROM },
+            to: [{ email }],
+            subject: 'Mã xác minh đăng ký tài khoản',
+            htmlContent: `
+                <h3>Mã xác minh của bạn</h3>
+                <p>Nhập mã sau để hoàn tất đăng ký:</p>
+                <h1 style="letter-spacing: 8px">${otp}</h1>
+                <p>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
+                <p>Nếu bạn không thực hiện yêu cầu này, hãy bỏ qua email này.</p>
+            `,
+        }),
     })
 
-    await transporter.sendMail({
-        from: `"Coffee Shop" <${process.env.BREVO_FROM}>`,
-        to: email,
-        subject: 'Mã xác minh đăng ký tài khoản',
-        html: `
-            <h3>Mã xác minh của bạn</h3>
-            <p>Nhập mã sau để hoàn tất đăng ký:</p>
-            <h1 style="letter-spacing: 8px">${otp}</h1>
-            <p>Mã có hiệu lực trong <strong>5 phút</strong>.</p>
-            <p>Nếu bạn không thực hiện yêu cầu này, hãy bỏ qua email này.</p>
-        `,
-    })
+    if (!response.ok) {
+        const err = await response.json()
+        throw new Error(err.message || 'Gửi email thất bại')
+    }
 }
 
 // Xóa hoàn toàn đoạn const transporter = ... bên dưới hàm
