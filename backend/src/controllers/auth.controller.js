@@ -6,37 +6,24 @@ import jwt from 'jsonwebtoken'
 
 // Hàm có nhiệm vụ gửi email otp
 const sendOTPEmail = async (email, otp) => {
-    // Tạo transporter = cấu hình "người gửi email"
-    // Hiểu đơn giản: backend dùng tài khoản Gmail này để gửi email đi
     const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false,          // false = STARTTLS
+        requireTLS: true,       // bắt buộc dùng TLS
         auth: {
-            // EMAIL_USER lấy từ file .env
-            // Ví dụ: EMAIL_USER=myshop@gmail.com
             user: process.env.EMAIL_USER,
-
-            // EMAIL_PASS là Gmail App Password
-            // Không dùng mật khẩu Gmail thường
-            pass: process.env.EMAIL_PASS, // Gmail App Password, không phải pass thường
+            pass: process.env.EMAIL_PASS,
         },
+        tls: {
+            rejectUnauthorized: false   // bỏ qua SSL cert errors
+        }
     })
 
-    // Thêm dòng này để verify kết nối trước khi gửi
-    await transporter.verify()
-    console.log('Mail transporter OK, sending to:', email)
-
-    // Gửi email thật
     await transporter.sendMail({
-        // Tên người gửi hiển thị trong email
         from: `"Shop" <${process.env.EMAIL_USER}>`,
-
-        // Email người nhận, chính là email user đăng ký
         to: email,
-
-        // Tiêu đề email
         subject: 'Mã xác minh đăng ký tài khoản',
-
-        // Nội dung email dạng HTML
         html: `
             <h3>Mã xác minh của bạn</h3>
             <p>Nhập mã sau để hoàn tất đăng ký:</p>
